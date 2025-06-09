@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 const protectedPaths = ["/dashboard"];
+const publicPaths = ["/signin", "/signup"];
 
 export async function middleware(request: NextRequest) {
   const token = await getToken({
@@ -11,6 +12,10 @@ export async function middleware(request: NextRequest) {
   });
 
   const path = request.nextUrl.pathname;
+
+  if (publicPaths.some((publicPath) => path.startsWith(publicPath)) && token) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
 
   if (protectedPaths.some((prefix) => path.startsWith(prefix)) && !token) {
     const url = new URL("/signin", request.url);
@@ -22,5 +27,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: ["/dashboard/:path*", "/signin", "/signup"],
 };
