@@ -25,3 +25,9 @@ export const POST = async (req: NextRequest) => {
     response: answerResponse,
   });
 };
+
+export const GET = async (req: NextRequest) => {
+    const answers = await prisma.answers.findMany();
+
+  return NextResponse.json({ answers });
+}

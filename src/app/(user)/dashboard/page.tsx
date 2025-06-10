@@ -9,6 +9,7 @@ const UserDashboard = () => {
   });
 
   const [questions, setQuestions] = useState([]);
+  const [answers, setAnswers] = useState([]);
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -52,7 +53,14 @@ const UserDashboard = () => {
     };
     fetchQuestions();
   }, []);
-  // console.log(questions);
+
+  useEffect(() => {
+    const fetchAnswers = async () => {
+      const answersData = await axios.get("/api/answerQn");
+      setAnswers(answersData.data.answers);
+    };
+    fetchAnswers();
+  }, []);
 
   return (
     <>
@@ -98,6 +106,14 @@ const UserDashboard = () => {
           <div key={question.id}>
             <h1>{question.title}</h1>
             <p>{question.desc}</p>
+            <h2>Answers:</h2>
+            {answers
+              .filter((answer) => answer.questionId === question.id)
+              .map((answer) => (
+                <div key={answer.id}>
+                  <p>{answer.answer}</p>
+                </div>
+              ))}
             <form onSubmit={answerQuestion}>
               <textarea
                 placeholder="enter answer"
