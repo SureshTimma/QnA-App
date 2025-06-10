@@ -24,3 +24,13 @@ export const POST = async (req: NextRequest) => {
     { status: 200 }
   );
 };
+
+
+export const GET = async (req: NextRequest) => {
+  const questions = await prisma.questions.findMany();
+  return NextResponse.json(
+    { message: "Get all questions", questions },
+    { status: 200 }
+  );
+}
+  
