@@ -21,7 +21,28 @@ const UserDashboard = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const response = await axios.post("/api/questions", qnData);
-    console.log(response);
+    // console.log(response);
+  };
+
+  const [answerData, setAnswerData] = useState({
+    questionId: "",
+    answer: "",
+  });
+
+  const handleAnswerChange = (e, questionId) => {
+    const { name, value } = e.target;
+    setAnswerData({
+      ...answerData,
+      questionId,
+      [name]: value,
+    });
+  };
+
+  const answerQuestion = async (e) => {
+    e.preventDefault();
+    const answerResponse = await axios.post("/api/answerQn", answerData);
+    // console.log(answerData);
+    console.log(answerResponse.data);
   };
 
   useEffect(() => {
@@ -31,7 +52,7 @@ const UserDashboard = () => {
     };
     fetchQuestions();
   }, []);
-  console.log(questions);
+  // console.log(questions);
 
   return (
     <>
@@ -77,6 +98,14 @@ const UserDashboard = () => {
           <div key={question.id}>
             <h1>{question.title}</h1>
             <p>{question.desc}</p>
+            <form onSubmit={answerQuestion}>
+              <textarea
+                placeholder="enter answer"
+                onChange={(e) => handleAnswerChange(e, question.id)}
+                name="answer"
+              ></textarea>
+              <button>Answer</button>
+            </form>
           </div>
         ))}
       </div>

@@ -8,6 +8,13 @@ datasource db {
   url      = env("MONGODB_URI")
 }
 
+model answers {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  answer     String
+  questionId String @db.ObjectId
+  userId     String @db.ObjectId
+}
+
 model questions {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
   desc   String
