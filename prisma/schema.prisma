@@ -8,9 +8,16 @@ datasource db {
   url      = env("MONGODB_URI")
 }
 
+model questions {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  desc   String
+  title  String
+  userId String @db.ObjectId
+}
+
 model users {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
-  email    String @unique
+  email    String
   password String
   username String
 }
