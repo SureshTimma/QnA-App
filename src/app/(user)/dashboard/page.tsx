@@ -46,6 +46,11 @@ const UserDashboard = () => {
     console.log(answerResponse.data);
   };
 
+  const handleLikeAnswer = async (answerId) => {
+    const response = await axios.put("/api/likes", { answerId });
+    console.log(response.data);
+  };
+
   useEffect(() => {
     const fetchQuestions = async () => {
       const qnsData = await axios.get("/api/questions");
@@ -112,6 +117,9 @@ const UserDashboard = () => {
               .map((answer) => (
                 <div key={answer.id}>
                   <p>{answer.answer}</p>
+                  <button onClick={() => handleLikeAnswer(answer.id)}>
+                    Like {answer.likes || 0}
+                  </button>
                 </div>
               ))}
             <form onSubmit={answerQuestion}>

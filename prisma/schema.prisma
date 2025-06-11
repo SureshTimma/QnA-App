@@ -11,6 +11,7 @@ datasource db {
 model answers {
   id         String @id @default(auto()) @map("_id") @db.ObjectId
   answer     String
+  likes      Int
   questionId String @db.ObjectId
   userId     String @db.ObjectId
 }
