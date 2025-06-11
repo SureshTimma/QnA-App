@@ -11,16 +11,22 @@ datasource db {
 model answers {
   id         String @id @default(auto()) @map("_id") @db.ObjectId
   answer     String
-  likes      Int
+  likes      BigInt
   questionId String @db.ObjectId
   userId     String @db.ObjectId
 }
 
 model questions {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  id     String   @id @default(auto()) @map("_id") @db.ObjectId
   desc   String
   title  String
-  userId String @db.ObjectId
+  topics String[]
+  userId String   @db.ObjectId
+}
+
+model topics {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  topicName String
 }
 
 model users {

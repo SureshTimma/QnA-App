@@ -1,4 +1,5 @@
 "use client";
+import TopicsMenu from "@/components/topicsMenu/page";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -70,6 +71,7 @@ const UserDashboard = () => {
   return (
     <>
       <main className="container mx-auto p-4">
+        <TopicsMenu />
         <h1 className="text-2xl font-bold mb-4">User Dashboard</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex flex-col">
