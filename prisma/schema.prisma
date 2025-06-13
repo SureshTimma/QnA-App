@@ -9,19 +9,25 @@ datasource db {
 }
 
 model answers {
-  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
   answer     String
   likes      BigInt
-  questionId String @db.ObjectId
-  userId     String @db.ObjectId
+  questionId String    @db.ObjectId
+  userId     String    @db.ObjectId
+  user       users     @relation(fields: [userId], references: [id])
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
 }
 
 model questions {
-  id     String   @id @default(auto()) @map("_id") @db.ObjectId
-  desc   String
-  title  String
-  topics String[]
-  userId String   @db.ObjectId
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  desc      String
+  title     String
+  topics    String[]
+  userId    String    @db.ObjectId
+  user      users     @relation(fields: [userId], references: [id])
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model topics {
@@ -30,8 +36,10 @@ model topics {
 }
 
 model users {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  email    String
-  password String
-  username String
+  id        String      @id @default(auto()) @map("_id") @db.ObjectId
+  email     String
+  password  String
+  username  String
+  questions questions[]
+  answers   answers[]
 }

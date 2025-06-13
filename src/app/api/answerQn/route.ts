@@ -12,22 +12,59 @@ export const POST = async (req: NextRequest) => {
   if (!session || !session.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  try {
+    const answerResponse = await prisma.answers.create({
+      data: {
+        questionId,
+        answer,
+        userId: session.user.id,
+        likes: BigInt(0), // Initialize likes to 0
+      },
+    });
 
-  const answerResponse = await prisma.answers.create({
-    data: {
-      questionId,
-      answer,
-      userId: session.user.id,
-    },
-  });
-  return NextResponse.json({
-    message: "Answering question",
-    response: answerResponse,
-  });
+    // Convert BigInt to number for JSON serialization
+    const serializedResponse = {
+      ...answerResponse,
+      likes: Number(answerResponse.likes),
+    };
+
+    return NextResponse.json({
+      message: "Answer submitted successfully",
+      response: serializedResponse,
+    });
+  } catch (error) {
+    console.error("Error creating answer:", error);
+    return NextResponse.json(
+      { error: "Failed to submit answer" },
+      { status: 500 }
+    );
+  }
 };
 
 export const GET = async (req: NextRequest) => {
-    const answers = await prisma.answers.findMany();
+  try {
+    const answers = await prisma.answers.findMany({
+      include: {
+        user: {
+          select: {
+            username: true,
+          },
+        },
+      },
+    });
 
-  return NextResponse.json({ answers });
-}
+    // Convert BigInt to number for JSON serialization
+    const serializedAnswers = answers.map((answer) => ({
+      ...answer,
+      likes: Number(answer.likes),
+    }));
+
+    return NextResponse.json({ answers: serializedAnswers });
+  } catch (error) {
+    console.error("Error fetching answers:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch answers" },
+      { status: 500 }
+    );
+  }
+};
