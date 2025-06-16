@@ -1,6 +1,8 @@
 "use client";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface Question {
   id: string;
@@ -57,6 +59,9 @@ const formatRelativeTime = (dateString: string | null | undefined): string => {
 };
 
 const UserDashboard = () => {
+  const { data: session } = useSession();
+  const router = useRouter();
+  
   const [qnData, setQnData] = useState({
     title: "",
     desc: "",
@@ -77,6 +82,13 @@ const UserDashboard = () => {
   const [imagePreview, setImagePreview] = useState<string>("");
   const [expandedQuestions, setExpandedQuestions] = useState<Set<string>>(new Set());
   const [showAnswerForm, setShowAnswerForm] = useState<Set<string>>(new Set());
+
+  const handleLogout = async () => {
+    await signOut({ 
+      callbackUrl: "/signin",
+      redirect: true 
+    });
+  };
 
   const toggleShowMoreAnswers = (questionId: string) => {
     setExpandedQuestions(prev => {
@@ -314,9 +326,7 @@ const UserDashboard = () => {
                 </div>
                 <h1 className="text-xl font-bold text-gray-900">Q&A Hub</h1>
               </div>
-            </div>
-
-            <div className="flex items-center space-x-4">
+            </div>            <div className="flex items-center space-x-4">
               <button
                 onClick={() => setShowQuestionForm(!showQuestionForm)}
                 className="hidden sm:flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg font-medium"
@@ -355,15 +365,52 @@ const UserDashboard = () => {
                   />
                 </svg>
               </button>
+
+              {/* Profile Section */}
+              <div className="flex items-center space-x-3 ml-4 pl-4 border-l border-gray-200">
+                {/* Profile Icon */}
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                    <span className="text-sm text-white font-medium">
+                      {session?.user?.name?.charAt(0)?.toUpperCase() || session?.user?.email?.charAt(0)?.toUpperCase() || "U"}
+                    </span>
+                  </div>
+                  <div className="hidden md:block">
+                    <p className="text-sm font-medium text-gray-900">
+                      {session?.user?.name || session?.user?.email || "User"}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Logout Button */}
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center space-x-2 px-3 py-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 font-medium text-sm"
+                  title="Sign out"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                    />
+                  </svg>
+                  <span className="hidden sm:inline">Logout</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </header>
-
-      <div className="flex">
+      </header>      <div className="flex">
         {/* Sidebar */}
         <aside
-          className={`fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
+          className={`fixed top-16 left-0 bottom-0 z-40 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:translate-x-0 ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
@@ -423,10 +470,8 @@ const UserDashboard = () => {
             className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
             onClick={() => setSidebarOpen(false)}
           ></div>
-        )}
-
-        {/* Main Content */}
-        <main className="flex-1 lg:ml-0">
+        )}        {/* Main Content */}
+        <main className="flex-1">
           <div className="max-w-4xl mx-auto p-6 space-y-8">
             {/* Welcome Section */}
             <div className="text-center py-8">
