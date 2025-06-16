@@ -4,9 +4,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { authOptions } from "../auth/[...nextauth]/route";
 
 export const POST = async (req: NextRequest) => {
-  const { title, desc, topics } = await req.json();
+  const { title, desc, topics, image } = await req.json();
   const session = await getServerSession(authOptions);
-  console.log(title, desc, topics);
+  console.log(title, desc, topics, image ? "Image included" : "No image");
 
   if (!session || !session.user || !session.user.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -17,6 +17,7 @@ export const POST = async (req: NextRequest) => {
       title: title,
       desc: desc,
       topics: topics || [],
+      image: image || null,
       userId: session.user.id,
     },
   });
@@ -26,8 +27,7 @@ export const POST = async (req: NextRequest) => {
   );
 };
 
-export const GET = async (req: NextRequest) => {
-  try {
+export const GET = async (req: NextRequest) => {  try {
     const questions = await prisma.questions.findMany({
       include: {
         user: {
@@ -37,6 +37,9 @@ export const GET = async (req: NextRequest) => {
             email: true,
           },
         },
+      },
+      orderBy: {
+        createdAt: 'desc', // Sort by creation date, newest first
       },
     });
     return NextResponse.json(

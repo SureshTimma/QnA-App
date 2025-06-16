@@ -43,6 +43,8 @@ export const POST = async (req: NextRequest) => {
 
 export const GET = async (req: NextRequest) => {
   try {
+    const session = await getServerSession(authOptions);
+    
     const answers = await prisma.answers.findMany({
       include: {
         user: {
@@ -50,13 +52,20 @@ export const GET = async (req: NextRequest) => {
             username: true,
           },
         },
+        userLikes: session?.user?.id ? {
+          where: {
+            userId: session.user.id,
+          },
+        } : false,
       },
     });
 
-    // Convert BigInt to number for JSON serialization
+    // Convert BigInt to number for JSON serialization and add isLiked flag
     const serializedAnswers = answers.map((answer) => ({
       ...answer,
       likes: Number(answer.likes),
+      isLiked: session?.user?.id ? answer.userLikes.length > 0 : false,
+      userLikes: undefined, // Remove userLikes from the response
     }));
 
     return NextResponse.json({ answers: serializedAnswers });

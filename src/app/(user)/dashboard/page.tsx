@@ -7,6 +7,7 @@ interface Question {
   title: string;
   desc: string;
   topics: string[];
+  image?: string; // Base64 encoded image
   userId: string;
   user: {
     username: string;
@@ -24,6 +25,7 @@ interface Answer {
     username: string;
   };
   createdAt?: string;
+  isLiked?: boolean;
 }
 
 interface Topic {
@@ -59,6 +61,7 @@ const UserDashboard = () => {
     title: "",
     desc: "",
     topics: [] as string[],
+    image: "" as string,
   });
   const [questions, setQuestions] = useState<Question[]>([]);
   const [filteredQuestions, setFilteredQuestions] = useState<Question[]>([]);
@@ -72,6 +75,8 @@ const UserDashboard = () => {
   >([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showQuestionForm, setShowQuestionForm] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string>("");
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -89,17 +94,41 @@ const UserDashboard = () => {
         ...qnData,
         topics: selectedQuestionTopics,
       };
-      const response = await axios.post("/api/questions", dataToSubmit);
-      console.log(response.data); // Reset form after successful submission
-      setQnData({ title: "", desc: "", topics: [] });
+      const response = await axios.post("/api/questions", dataToSubmit);      console.log(response.data); // Reset form after successful submission
+      setQnData({ title: "", desc: "", topics: [], image: "" });
       setSelectedQuestionTopics([]);
+      setImagePreview("");
       setShowQuestionForm(false);
       // Refresh questions list
       fetchQuestions();
     } catch (error) {
-      console.error("Error submitting question:", error);
+      console.error("Error submitting question:", error);    }
+  };
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setQnData({
+          ...qnData,
+          image: base64String,
+        });
+        setImagePreview(base64String);
+      };
+      reader.readAsDataURL(file);
     }
   };
+
+  const removeImage = () => {
+    setQnData({
+      ...qnData,
+      image: "",
+    });
+    setImagePreview("");
+  };
+
   const [answerData, setAnswerData] = useState({
     questionId: "",
     answer: "",
@@ -145,7 +174,6 @@ const UserDashboard = () => {
       console.error("Error submitting answer:", error);
     }
   };
-
   const handleLikeAnswer = async (answerId: string) => {
     try {
       const response = await axios.put("/api/likes", { answerId });
@@ -455,8 +483,40 @@ const UserDashboard = () => {
                         onChange={handleInputChange}
                         rows={4}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none"
-                        placeholder="Provide more details about your question..."
-                      ></textarea>
+                        placeholder="Provide more details about your question..."                      ></textarea>
+                    </div>
+
+                    {/* Image Upload Section */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Attach Image (Optional)
+                      </label>
+                      <div className="space-y-3">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageSelect}
+                          aria-label="Upload image for question"
+                          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-colors"
+                        />
+                        {imagePreview && (
+                          <div className="relative inline-block">
+                            <img
+                              src={imagePreview}
+                              alt="Preview"
+                              className="max-w-xs max-h-40 rounded-lg border border-gray-200 shadow-sm"
+                            />
+                            <button
+                              type="button"
+                              onClick={removeImage}
+                              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
+                              aria-label="Remove image"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
 
                     <div>
@@ -508,6 +568,61 @@ const UserDashboard = () => {
                       )}
                     </div>
 
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Image (Optional)
+                      </label>
+                      <div className="flex items-center space-x-3">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageSelect}
+                          className="hidden"
+                          id="image-upload"
+                        />
+                        <label
+                          htmlFor="image-upload"
+                          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                        >
+                          <span className="text-sm font-medium text-gray-700">
+                            {qnData.image ? "Change Image" : "Upload Image"}
+                          </span>
+                        </label>
+                        {qnData.image && (
+                          <button
+                            onClick={removeImage}
+                            className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                            type="button"
+                            aria-label="Remove image"
+                          >
+                            <svg
+                              className="w-5 h-5"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+                        )}
+                      </div>
+
+                      {imagePreview && (
+                        <div className="mt-3">
+                          <img
+                            src={imagePreview}
+                            alt="Image preview"
+                            className="max-w-full h-auto rounded-lg shadow-md"
+                          />
+                        </div>
+                      )}
+                    </div>
+
                     <div className="flex space-x-3 pt-4">
                       <button
                         type="button"
@@ -531,16 +646,16 @@ const UserDashboard = () => {
             {/* Questions Section */}
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">
+                <div>                  <h2 className="text-2xl font-bold text-gray-900">
                     {selectedTopicFilter
                       ? topics.find((t) => t.id === selectedTopicFilter)
                           ?.topicName || "Questions"
-                      : "Recent Questions"}
+                      : "Latest Questions"}
                   </h2>
                   <p className="text-gray-600 mt-1">
                     {filteredQuestions.length} question
                     {filteredQuestions.length !== 1 ? "s" : ""} found
+                    {!selectedTopicFilter && " • Sorted by newest first"}
                   </p>
                 </div>
 
@@ -633,10 +748,20 @@ const UserDashboard = () => {
                               ) : null;
                             })}
                           </div>
-                        )}
-                        <p className="text-gray-600 leading-relaxed mb-4">
+                        )}                        <p className="text-gray-600 leading-relaxed mb-4">
                           {question.desc}
-                        </p>{" "}
+                        </p>
+
+                        {/* Display attached image if exists */}
+                        {question.image && (
+                          <div className="mb-4">
+                            <img
+                              src={question.image}
+                              alt="Question attachment"
+                              className="max-w-full max-h-64 rounded-lg border border-gray-200 shadow-sm object-contain"
+                            />
+                          </div>
+                        )}{" "}
                         <div className="flex items-center justify-between text-sm text-gray-500">
                           <span>
                             {
@@ -723,17 +848,21 @@ const UserDashboard = () => {
                                           {answer.answer}
                                         </p>
                                       </div>
-                                    </div>
-                                    <div className="flex items-center justify-between pl-11">
+                                    </div>                                    <div className="flex items-center justify-between pl-11">
                                       <button
                                         onClick={() =>
                                           handleLikeAnswer(answer.id)
                                         }
-                                        className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 transition-colors text-sm font-medium"
+                                        className={`flex items-center space-x-2 transition-colors text-sm font-medium ${
+                                          answer.isLiked 
+                                            ? 'text-red-600 hover:text-red-700' 
+                                            : 'text-blue-600 hover:text-blue-700'
+                                        }`}
                                       >
                                         <svg
                                           className="w-4 h-4"
-                                          fill="currentColor"
+                                          fill={answer.isLiked ? "currentColor" : "none"}
+                                          stroke="currentColor"
                                           viewBox="0 0 20 20"
                                         >
                                           <path
@@ -743,7 +872,7 @@ const UserDashboard = () => {
                                           />
                                         </svg>
                                         <span>
-                                          {Number(answer.likes) || 0} likes
+                                          {answer.isLiked ? 'Unlike' : 'Like'} ({Number(answer.likes) || 0})
                                         </span>
                                       </button>
                                     </div>

@@ -15,6 +15,7 @@ model answers {
   questionId String    @db.ObjectId
   userId     String    @db.ObjectId
   user       users     @relation(fields: [userId], references: [id])
+  userLikes  likes[]   @relation("AnswerLikes")
   createdAt  DateTime? @default(now())
   updatedAt  DateTime? @updatedAt
 }
@@ -24,10 +25,21 @@ model questions {
   desc      String
   title     String
   topics    String[]
+  image     String?   // Base64 encoded image data
   userId    String    @db.ObjectId
   user      users     @relation(fields: [userId], references: [id])
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
+}
+
+model likes {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId   String  @db.ObjectId
+  answerId String  @db.ObjectId
+  user     users   @relation(fields: [userId], references: [id])
+  answer   answers @relation("AnswerLikes", fields: [answerId], references: [id])
+  
+  @@unique([userId, answerId]) // Ensure one user can only like one answer once
 }
 
 model topics {
@@ -42,4 +54,5 @@ model users {
   username  String
   questions questions[]
   answers   answers[]
+  likes     likes[]
 }
