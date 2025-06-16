@@ -25,7 +25,7 @@ model questions {
   desc      String
   title     String
   topics    String[]
-  image     String?   // Base64 encoded image data
+  image     String? // Base64 encoded image data
   userId    String    @db.ObjectId
   user      users     @relation(fields: [userId], references: [id])
   createdAt DateTime? @default(now())
@@ -38,7 +38,7 @@ model likes {
   answerId String  @db.ObjectId
   user     users   @relation(fields: [userId], references: [id])
   answer   answers @relation("AnswerLikes", fields: [answerId], references: [id])
-  
+
   @@unique([userId, answerId]) // Ensure one user can only like one answer once
 }
 

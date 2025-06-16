@@ -27,7 +27,8 @@ export const POST = async (req: NextRequest) => {
   );
 };
 
-export const GET = async (req: NextRequest) => {  try {
+export const GET = async (req: NextRequest) => {
+  try {
     const questions = await prisma.questions.findMany({
       include: {
         user: {
@@ -39,7 +40,7 @@ export const GET = async (req: NextRequest) => {  try {
         },
       },
       orderBy: {
-        createdAt: 'desc', // Sort by creation date, newest first
+        createdAt: "desc", // Sort by creation date, newest first
       },
     });
     return NextResponse.json(

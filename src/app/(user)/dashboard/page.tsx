@@ -72,10 +72,35 @@ const UserDashboard = () => {
   );
   const [selectedQuestionTopics, setSelectedQuestionTopics] = useState<
     string[]
-  >([]);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  >([]);  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showQuestionForm, setShowQuestionForm] = useState(false);
   const [imagePreview, setImagePreview] = useState<string>("");
+  const [expandedQuestions, setExpandedQuestions] = useState<Set<string>>(new Set());
+  const [showAnswerForm, setShowAnswerForm] = useState<Set<string>>(new Set());
+
+  const toggleShowMoreAnswers = (questionId: string) => {
+    setExpandedQuestions(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(questionId)) {
+        newSet.delete(questionId);
+      } else {
+        newSet.add(questionId);
+      }
+      return newSet;
+    });
+  };
+
+  const toggleAnswerForm = (questionId: string) => {
+    setShowAnswerForm(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(questionId)) {
+        newSet.delete(questionId);
+      } else {
+        newSet.add(questionId);
+      }
+      return newSet;
+    });
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -94,7 +119,8 @@ const UserDashboard = () => {
         ...qnData,
         topics: selectedQuestionTopics,
       };
-      const response = await axios.post("/api/questions", dataToSubmit);      console.log(response.data); // Reset form after successful submission
+      const response = await axios.post("/api/questions", dataToSubmit);
+      console.log(response.data); // Reset form after successful submission
       setQnData({ title: "", desc: "", topics: [], image: "" });
       setSelectedQuestionTopics([]);
       setImagePreview("");
@@ -102,7 +128,8 @@ const UserDashboard = () => {
       // Refresh questions list
       fetchQuestions();
     } catch (error) {
-      console.error("Error submitting question:", error);    }
+      console.error("Error submitting question:", error);
+    }
   };
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -244,8 +271,7 @@ const UserDashboard = () => {
       setFilteredQuestions(questions);
     }
   }, [questions, selectedTopicFilter]);
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+  return (    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
       {/* Header Bar */}
       <header className="bg-white/80 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -271,7 +297,7 @@ const UserDashboard = () => {
                 </svg>
               </button>
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
                   <svg
                     className="w-5 h-5 text-white"
                     fill="none"
@@ -293,7 +319,7 @@ const UserDashboard = () => {
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => setShowQuestionForm(!showQuestionForm)}
-                className="hidden sm:flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg"
+                className="hidden sm:flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg font-medium"
               >
                 <svg
                   className="w-4 h-4"
@@ -308,11 +334,11 @@ const UserDashboard = () => {
                     d="M12 4v16m8-8H4"
                   />
                 </svg>
-                <span className="font-medium">Ask Question</span>
+                <span>Ask Question</span>
               </button>
               <button
                 onClick={() => setShowQuestionForm(!showQuestionForm)}
-                className="sm:hidden p-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg"
+                className="sm:hidden p-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg shadow-md"
                 aria-label="Ask question"
               >
                 <svg
@@ -349,21 +375,18 @@ const UserDashboard = () => {
               <p className="text-sm text-gray-500">
                 Browse questions by category
               </p>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-4 space-y-2">
-              <button
+            </div>            <div className="flex-1 overflow-y-auto p-4 space-y-2">              <button
                 onClick={() => handleTopicFilter(null)}
                 className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 ${
                   selectedTopicFilter === null
-                    ? "bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 text-blue-700"
+                    ? "bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 text-blue-700"
                     : "hover:bg-gray-50 text-gray-700"
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <span className="font-medium">All Topics</span>
                   <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                    {filteredQuestions.length}
+                    {questions.length}
                   </span>
                 </div>
               </button>
@@ -374,7 +397,7 @@ const UserDashboard = () => {
                   onClick={() => handleTopicFilter(topic.id)}
                   className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 ${
                     selectedTopicFilter === topic.id
-                      ? "bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 text-blue-700"
+                      ? "bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 text-blue-700"
                       : "hover:bg-gray-50 text-gray-700"
                   }`}
                 >
@@ -382,7 +405,7 @@ const UserDashboard = () => {
                     <span className="font-medium">{topic.topicName}</span>
                     <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
                       {
-                        filteredQuestions.filter((q) =>
+                        questions.filter((q) =>
                           q.topics?.includes(topic.id)
                         ).length
                       }
@@ -415,24 +438,41 @@ const UserDashboard = () => {
                 community. Connect with experts and get answers to your
                 questions.
               </p>
-            </div>
-
-            {/* Question Form Modal */}
+            </div>            {/* Question Form Modal */}
             {showQuestionForm && (
               <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-                <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                  <div className="p-6 border-b border-gray-200">
+                <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                  {/* Header */}
+                  <div className="bg-gradient-to-r from-blue-500 to-blue-600 py-6 px-6">
                     <div className="flex items-center justify-between">
-                      <h2 className="text-2xl font-bold text-gray-900">
-                        Ask a Question
-                      </h2>
+                      <div className="text-center flex-1">
+                        <div className="inline-flex items-center justify-center w-12 h-12 bg-white/20 rounded-full mb-3">
+                          <svg
+                            className="h-6 w-6 text-white"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                        </div>
+                        <h2 className="text-2xl font-bold text-white mb-2">
+                          Ask a Question
+                        </h2>
+                        <p className="text-blue-100 text-sm">Share your question with the community</p>
+                      </div>
                       <button
                         onClick={() => setShowQuestionForm(false)}
-                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                        className="p-2 hover:bg-white/20 rounded-lg transition-colors ml-4"
                         aria-label="Close"
                       >
                         <svg
-                          className="w-5 h-5"
+                          className="w-5 h-5 text-white"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -448,11 +488,10 @@ const UserDashboard = () => {
                     </div>
                   </div>
 
-                  <form onSubmit={handleSubmit} className="p-6 space-y-6">
-                    <div>
-                      <label
+                  <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                    <div>                      <label
                         htmlFor="title"
-                        className="block text-sm font-semibold text-gray-700 mb-2"
+                        className="block text-sm font-medium text-gray-700 mb-1"
                       >
                         Question Title *
                       </label>
@@ -463,7 +502,7 @@ const UserDashboard = () => {
                         value={qnData.title}
                         required
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                        className="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 focus:bg-white text-sm"
                         placeholder="What's your question?"
                       />
                     </div>
@@ -471,7 +510,7 @@ const UserDashboard = () => {
                     <div>
                       <label
                         htmlFor="desc"
-                        className="block text-sm font-semibold text-gray-700 mb-2"
+                        className="block text-sm font-medium text-gray-700 mb-1"
                       >
                         Description *
                       </label>
@@ -482,13 +521,14 @@ const UserDashboard = () => {
                         required
                         onChange={handleInputChange}
                         rows={4}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none"
-                        placeholder="Provide more details about your question..."                      ></textarea>
+                        className="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 focus:bg-white text-sm resize-none"
+                        placeholder="Provide more details about your question..."
+                      ></textarea>
                     </div>
 
                     {/* Image Upload Section */}
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
                         Attach Image (Optional)
                       </label>
                       <div className="space-y-3">
@@ -565,75 +605,19 @@ const UserDashboard = () => {
                             })}
                           </div>
                         </div>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Image (Optional)
-                      </label>
-                      <div className="flex items-center space-x-3">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageSelect}
-                          className="hidden"
-                          id="image-upload"
-                        />
-                        <label
-                          htmlFor="image-upload"
-                          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
-                        >
-                          <span className="text-sm font-medium text-gray-700">
-                            {qnData.image ? "Change Image" : "Upload Image"}
-                          </span>
-                        </label>
-                        {qnData.image && (
-                          <button
-                            onClick={removeImage}
-                            className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-                            type="button"
-                            aria-label="Remove image"
-                          >
-                            <svg
-                              className="w-5 h-5"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M6 18L18 6M6 6l12 12"
-                              />
-                            </svg>
-                          </button>
-                        )}
-                      </div>
-
-                      {imagePreview && (
-                        <div className="mt-3">
-                          <img
-                            src={imagePreview}
-                            alt="Image preview"
-                            className="max-w-full h-auto rounded-lg shadow-md"
-                          />
-                        </div>
-                      )}
-                    </div>
+                      )}                    </div>
 
                     <div className="flex space-x-3 pt-4">
                       <button
                         type="button"
                         onClick={() => setShowQuestionForm(false)}
-                        className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                        className="flex-1 px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm"
                       >
                         Cancel
                       </button>
                       <button
                         type="submit"
-                        className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-medium shadow-lg"
+                        className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-2.5 rounded-lg transition duration-300 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-md hover:shadow-lg transform hover:scale-[1.01] active:scale-[0.99] text-sm"
                       >
                         Submit Question
                       </button>
@@ -646,7 +630,9 @@ const UserDashboard = () => {
             {/* Questions Section */}
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <div>                  <h2 className="text-2xl font-bold text-gray-900">
+                <div>
+                  {" "}
+                  <h2 className="text-2xl font-bold text-gray-900">
                     {selectedTopicFilter
                       ? topics.find((t) => t.id === selectedTopicFilter)
                           ?.topicName || "Questions"
@@ -695,8 +681,7 @@ const UserDashboard = () => {
                       : "Start the conversation by asking the first question."}
                   </p>
                   <button
-                    onClick={() => setShowQuestionForm(true)}
-                    className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-medium shadow-lg"
+                    onClick={() => setShowQuestionForm(true)}                    className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-lg transition-all duration-200 font-medium shadow-md hover:shadow-lg"
                   >
                     <svg
                       className="w-4 h-4"
@@ -748,10 +733,10 @@ const UserDashboard = () => {
                               ) : null;
                             })}
                           </div>
-                        )}                        <p className="text-gray-600 leading-relaxed mb-4">
+                        )}{" "}
+                        <p className="text-gray-600 leading-relaxed mb-4">
                           {question.desc}
                         </p>
-
                         {/* Display attached image if exists */}
                         {question.image && (
                           <div className="mb-4">
@@ -794,116 +779,201 @@ const UserDashboard = () => {
 
                       {/* Answers Section */}
                       <div className="border-t border-gray-100">
-                        <div className="p-6">
-                          <h4 className="text-base font-semibold text-gray-900 mb-4">
-                            Answers (
-                            {
-                              answers.filter(
-                                (answer) => answer.questionId === question.id
-                              ).length
-                            }
-                            )
-                          </h4>
+                        <div className="p-6">                          {(() => {
+                            const questionAnswers = answers.filter(
+                              (answer) => answer.questionId === question.id
+                            );
+                            const answerCount = questionAnswers.length;
+                            const isExpanded = expandedQuestions.has(question.id);
+                            const showAnswerFormForQuestion = showAnswerForm.has(question.id);
+                            
+                            // Show first 2 answers by default, all when expanded
+                            const displayedAnswers = isExpanded 
+                              ? questionAnswers 
+                              : questionAnswers.slice(0, 2);
 
-                          {answers.filter(
-                            (answer) => answer.questionId === question.id
-                          ).length === 0 ? (
-                            <div className="text-center py-8 text-gray-500">
-                              <p className="mb-3">No answers yet</p>
-                              <p className="text-sm">Be the first to help!</p>
-                            </div>
-                          ) : (
-                            <div className="space-y-4 mb-6">
-                              {answers
-                                .filter(
-                                  (answer) => answer.questionId === question.id
-                                )
-                                .map((answer) => (
-                                  <div
-                                    key={answer.id}
-                                    className="bg-gray-50 rounded-lg p-4"
-                                  >
-                                    <div className="flex items-start space-x-3 mb-3">
-                                      <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center flex-shrink-0">
-                                        <span className="text-xs text-white font-medium">
-                                          {answer.user?.username
-                                            ?.charAt(0)
-                                            .toUpperCase() || "U"}
-                                        </span>
-                                      </div>
-                                      <div className="flex-1">
-                                        {" "}
-                                        <div className="flex items-center space-x-2 mb-1">
-                                          <span className="font-medium text-gray-900 text-sm">
-                                            {answer.user?.username ||
-                                              "Unknown User"}
-                                          </span>{" "}
-                                          <span className="text-xs text-gray-500">
-                                            {formatRelativeTime(
-                                              answer.createdAt
-                                            )}
-                                          </span>
-                                        </div>
-                                        <p className="text-gray-700 leading-relaxed">
-                                          {answer.answer}
-                                        </p>
-                                      </div>
-                                    </div>                                    <div className="flex items-center justify-between pl-11">
-                                      <button
-                                        onClick={() =>
-                                          handleLikeAnswer(answer.id)
-                                        }
-                                        className={`flex items-center space-x-2 transition-colors text-sm font-medium ${
-                                          answer.isLiked 
-                                            ? 'text-red-600 hover:text-red-700' 
-                                            : 'text-blue-600 hover:text-blue-700'
-                                        }`}
-                                      >
-                                        <svg
-                                          className="w-4 h-4"
-                                          fill={answer.isLiked ? "currentColor" : "none"}
-                                          stroke="currentColor"
-                                          viewBox="0 0 20 20"
-                                        >
-                                          <path
-                                            fillRule="evenodd"
-                                            d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                                            clipRule="evenodd"
-                                          />
-                                        </svg>
-                                        <span>
-                                          {answer.isLiked ? 'Unlike' : 'Like'} ({Number(answer.likes) || 0})
-                                        </span>
-                                      </button>
-                                    </div>
+                            return (
+                              <>
+                                <div className="flex items-center justify-between mb-4">
+                                  <h4 className="text-base font-semibold text-gray-900">
+                                    Answers ({answerCount})
+                                  </h4>
+                                  {answerCount === 0 && (
+                                    <button
+                                      onClick={() => toggleAnswerForm(question.id)}
+                                      className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg transition duration-300 font-medium text-sm shadow-md hover:shadow-lg"
+                                    >
+                                      Answer
+                                    </button>
+                                  )}
+                                </div>
+
+                                {answerCount === 0 ? (
+                                  <div className="text-center py-8 text-gray-500">
+                                    <p className="mb-3">No answers yet</p>
+                                    <p className="text-sm">Be the first to help!</p>
                                   </div>
-                                ))}
-                            </div>
-                          )}
-                          {/* Answer Form */}
-                          <form
-                            onSubmit={(e) => answerQuestion(e, question.id)}
-                            className="bg-gray-50 rounded-lg p-4"
-                          >
-                            <textarea
-                              placeholder="Write your answer..."
-                              onChange={(e) =>
-                                handleAnswerChange(e, question.id)
-                              }
-                              name="answer"
-                              value={answerValues[question.id] || ""}
-                              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none"
-                              rows={3}
-                            ></textarea>
-                            <div className="flex justify-end mt-3">
-                              <button
-                                type="submit"
-                                className="px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-medium text-sm shadow-sm"
-                              >
-                                Submit Answer
-                              </button>
-                            </div>
-                          </form>
+                                ) : (
+                                  <>
+                                    <div className="space-y-4 mb-6">
+                                      {displayedAnswers.map((answer) => (
+                                        <div
+                                          key={answer.id}
+                                          className="bg-gray-50 rounded-lg p-4"
+                                        >
+                                          <div className="flex items-start space-x-3 mb-3">
+                                            <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                              <span className="text-xs text-white font-medium">
+                                                {answer.user?.username
+                                                  ?.charAt(0)
+                                                  .toUpperCase() || "U"}
+                                              </span>
+                                            </div>
+                                            <div className="flex-1">
+                                              <div className="flex items-center space-x-2 mb-1">
+                                                <span className="font-medium text-gray-900 text-sm">
+                                                  {answer.user?.username ||
+                                                    "Unknown User"}
+                                                </span>
+                                                <span className="text-xs text-gray-500">
+                                                  {formatRelativeTime(
+                                                    answer.createdAt
+                                                  )}
+                                                </span>
+                                              </div>
+                                              <p className="text-gray-700 leading-relaxed">
+                                                {answer.answer}
+                                              </p>
+                                            </div>
+                                          </div>
+                                          <div className="flex items-center justify-between pl-11">
+                                            <button
+                                              onClick={() =>
+                                                handleLikeAnswer(answer.id)
+                                              }
+                                              className={`flex items-center space-x-2 transition-colors text-sm font-medium ${
+                                                answer.isLiked
+                                                  ? "text-red-600 hover:text-red-700"
+                                                  : "text-blue-600 hover:text-blue-700"
+                                              }`}
+                                            >
+                                              <svg
+                                                className="w-4 h-4"
+                                                fill={
+                                                  answer.isLiked
+                                                    ? "currentColor"
+                                                    : "none"
+                                                }
+                                                stroke="currentColor"
+                                                viewBox="0 0 20 20"
+                                              >
+                                                <path
+                                                  fillRule="evenodd"
+                                                  d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                                                  clipRule="evenodd"
+                                                />
+                                              </svg>
+                                              <span>
+                                                {answer.isLiked ? "Unlike" : "Like"} (
+                                                {Number(answer.likes) || 0})
+                                              </span>
+                                            </button>
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+
+                                    {/* Show More/Less Answers Button */}
+                                    {answerCount > 2 && (
+                                      <div className="flex justify-center mb-4">
+                                        <button
+                                          onClick={() => toggleShowMoreAnswers(question.id)}
+                                          className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors"
+                                        >
+                                          {isExpanded ? (
+                                            <>
+                                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                                              </svg>
+                                              <span>Show Less Answers</span>
+                                            </>
+                                          ) : (
+                                            <>
+                                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                              </svg>
+                                              <span>Show More Answers ({answerCount - 2} more)</span>
+                                            </>
+                                          )}
+                                        </button>
+                                      </div>
+                                    )}
+                                  </>
+                                )}
+
+                                {/* Answer Form - Show for questions with answers or when explicitly requested */}
+                                {(answerCount > 0 || showAnswerFormForQuestion) && (
+                                  <>
+                                    {answerCount > 0 && !showAnswerFormForQuestion && (
+                                      <div className="flex justify-center mb-4">
+                                        <button
+                                          onClick={() => toggleAnswerForm(question.id)}
+                                          className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg transition duration-300 font-medium text-sm shadow-md hover:shadow-lg"
+                                        >
+                                          Add Answer
+                                        </button>
+                                      </div>
+                                    )}
+                                    
+                                    {showAnswerFormForQuestion && (
+                                      <form
+                                        onSubmit={(e) => {
+                                          answerQuestion(e, question.id);
+                                          setShowAnswerForm(prev => {
+                                            const newSet = new Set(prev);
+                                            newSet.delete(question.id);
+                                            return newSet;
+                                          });
+                                        }}
+                                        className="bg-gray-50 rounded-lg p-4"
+                                      >
+                                        <div className="flex items-center justify-between mb-3">
+                                          <h5 className="font-medium text-gray-900">Your Answer</h5>
+                                          <button
+                                            type="button"
+                                            onClick={() => toggleAnswerForm(question.id)}
+                                            className="text-gray-400 hover:text-gray-600 transition-colors"
+                                          >
+                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                          </button>
+                                        </div>
+                                        <textarea
+                                          placeholder="Write your answer..."
+                                          onChange={(e) =>
+                                            handleAnswerChange(e, question.id)
+                                          }
+                                          name="answer"
+                                          value={answerValues[question.id] || ""}
+                                          className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 focus:bg-white text-sm resize-none"
+                                          rows={3}
+                                        ></textarea>
+                                        <div className="flex justify-end mt-3">
+                                          <button
+                                            type="submit"
+                                            className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg transition duration-300 font-medium text-sm shadow-md hover:shadow-lg"
+                                          >
+                                            Submit Answer
+                                          </button>
+                                        </div>
+                                      </form>
+                                    )}
+                                  </>
+                                )}
+                              </>
+                            );
+                          })()}
                         </div>
                       </div>
                     </div>
