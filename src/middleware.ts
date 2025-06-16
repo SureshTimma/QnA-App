@@ -13,6 +13,15 @@ export async function middleware(request: NextRequest) {
 
   const path = request.nextUrl.pathname;
 
+  // Handle root path
+  if (path === "/") {
+    if (token) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    } else {
+      return NextResponse.redirect(new URL("/signin", request.url));
+    }
+  }
+
   if (publicPaths.some((publicPath) => path.startsWith(publicPath)) && token) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
@@ -27,5 +36,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/signin", "/signup"],
+  matcher: ["/", "/dashboard/:path*", "/signin", "/signup"],
 };
