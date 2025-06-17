@@ -4,16 +4,16 @@ import { useEffect, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
+
+
+//interfaces
 interface Question {
   id: string;
   title: string;
   desc: string;
   topics: string[];
-  image?: string; // Base64 encoded image
+  image?: string;
   userId: string;
-  user: {
-    username: string;
-  };
   createdAt?: string;
 }
 
@@ -23,9 +23,6 @@ interface Answer {
   answer: string;
   likes: number;
   userId: string;
-  user: {
-    username: string;
-  };
   createdAt?: string;
   isLiked?: boolean;
 }
@@ -35,7 +32,9 @@ interface Topic {
   topicName: string;
 }
 
-// Helper function to format relative time
+
+
+// function to format relative time
 const formatRelativeTime = (dateString: string | null | undefined): string => {
   if (!dateString) return "Recently";
 
@@ -58,6 +57,9 @@ const formatRelativeTime = (dateString: string | null | undefined): string => {
   }
 };
 
+
+
+//pages main code starts here
 const UserDashboard = () => {
   const { data: session } = useSession();
   const router = useRouter();
@@ -68,21 +70,22 @@ const UserDashboard = () => {
     topics: [] as string[],
     image: "" as string,
   });
+
+
+  // State variables
   const [questions, setQuestions] = useState<Question[]>([]);
   const [filteredQuestions, setFilteredQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [topics, setTopics] = useState<Topic[]>([]);
-  const [selectedTopicFilter, setSelectedTopicFilter] = useState<string | null>(
-    null
-  );
-  const [selectedQuestionTopics, setSelectedQuestionTopics] = useState<
-    string[]
-  >([]);  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [selectedTopicFilter, setSelectedTopicFilter] = useState<string | null>(null);
+  const [selectedQuestionTopics, setSelectedQuestionTopics] = useState<string[]>([]);  
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showQuestionForm, setShowQuestionForm] = useState(false);
   const [imagePreview, setImagePreview] = useState<string>("");
   const [expandedQuestions, setExpandedQuestions] = useState<Set<string>>(new Set());
   const [showAnswerForm, setShowAnswerForm] = useState<Set<string>>(new Set());
 
+  
   const handleLogout = async () => {
     await signOut({ 
       callbackUrl: "/signin",
@@ -90,6 +93,8 @@ const UserDashboard = () => {
     });
   };
 
+  
+  //toggles
   const toggleShowMoreAnswers = (questionId: string) => {
     setExpandedQuestions(prev => {
       const newSet = new Set(prev);
@@ -113,7 +118,10 @@ const UserDashboard = () => {
       return newSet;
     });
   };
-
+    
+  
+  
+  //handlers
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -132,17 +140,20 @@ const UserDashboard = () => {
         topics: selectedQuestionTopics,
       };
       const response = await axios.post("/api/questions", dataToSubmit);
-      console.log(response.data); // Reset form after successful submission
+
+      //resetting form
       setQnData({ title: "", desc: "", topics: [], image: "" });
       setSelectedQuestionTopics([]);
       setImagePreview("");
       setShowQuestionForm(false);
-      // Refresh questions list
+
       fetchQuestions();
     } catch (error) {
       console.error("Error submitting question:", error);
     }
   };
+
+  //handeling image
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -168,13 +179,17 @@ const UserDashboard = () => {
     setImagePreview("");
   };
 
+
+
   const [answerData, setAnswerData] = useState({
     questionId: "",
     answer: "",
   });
+
   const [answerValues, setAnswerValues] = useState<{ [key: string]: string }>(
     {}
   );
+  
   const handleAnswerChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>,
     questionId: string
@@ -283,6 +298,11 @@ const UserDashboard = () => {
       setFilteredQuestions(questions);
     }
   }, [questions, selectedTopicFilter]);
+
+
+
+
+
   return (    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
       {/* Header Bar */}
       <header className="bg-white/80 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-50">
