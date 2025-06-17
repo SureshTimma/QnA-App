@@ -266,7 +266,7 @@ const UserDashboard = () => {
     }
   }, [questions, selectedTopicFilter]);
 
-  
+
 
   //fetching data
   const fetchQuestions = async () => {
@@ -301,21 +301,19 @@ const UserDashboard = () => {
     fetchAnswers();
     fetchTopics();
   }, []);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
       {/* Header Bar */}
       <header className="bg-white/80 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+          <div className="flex items-center justify-between h-14 sm:h-16">            <div className="flex items-center space-x-2 sm:space-x-4">
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                className="lg:hidden p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 transition-colors"
                 aria-label="Toggle sidebar"
               >
                 <svg
-                  className="w-5 h-5"
+                  className="w-4 h-4 sm:w-5 sm:h-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -328,10 +326,10 @@ const UserDashboard = () => {
                   />
                 </svg>
               </button>
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+              <div className="flex items-center space-x-2 sm:space-x-3">
+                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
                   <svg
-                    className="w-5 h-5 text-white"
+                    className="w-3 h-3 sm:w-5 sm:h-5 text-white"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -344,13 +342,12 @@ const UserDashboard = () => {
                     />
                   </svg>
                 </div>
-                <h1 className="text-xl font-bold text-gray-900">Q&A Hub</h1>
+                <h1 className="text-lg sm:text-xl font-bold text-gray-900">Q&A Hub</h1>
               </div>
-            </div>{" "}
-            <div className="flex items-center space-x-4">
+            </div>{" "}            <div className="flex items-center space-x-2 sm:space-x-4">
               <button
                 onClick={() => setShowQuestionForm(!showQuestionForm)}
-                className="hidden sm:flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg font-medium"
+                className="hidden sm:flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg font-medium text-sm"
               >
                 <svg
                   className="w-4 h-4"
@@ -364,42 +361,22 @@ const UserDashboard = () => {
                     strokeWidth={2}
                     d="M12 4v16m8-8H4"
                   />
-                </svg>
-                <span>Ask Question</span>
-              </button>
-              <button
-                onClick={() => setShowQuestionForm(!showQuestionForm)}
-                className="sm:hidden p-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg shadow-md"
-                aria-label="Ask question"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
+                </svg>                <span className="hidden md:inline">Ask Question</span>
+                <span className="md:hidden">Ask</span>
               </button>
 
               {/* Profile Section */}
-              <div className="flex items-center space-x-3 ml-4 pl-4 border-l border-gray-200">
+              <div className="flex items-center space-x-2 sm:space-x-3 ml-2 sm:ml-4 pl-2 sm:pl-4 border-l border-gray-200">
                 {/* Profile Icon */}
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                    <span className="text-sm text-white font-medium">
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                    <span className="text-xs sm:text-sm text-white font-medium">
                       {session?.user?.name?.charAt(0)?.toUpperCase() ||
                         session?.user?.email?.charAt(0)?.toUpperCase() ||
                         "U"}
                     </span>
-                  </div>
-                  <div className="hidden md:block">
-                    <p className="text-sm font-medium text-gray-900">
+                  </div>                  <div className="hidden sm:block">
+                    <p className="text-xs sm:text-sm font-medium text-gray-900 truncate max-w-24 sm:max-w-none">
                       {session?.user?.name || session?.user?.email || "User"}
                     </p>
                   </div>
@@ -408,11 +385,11 @@ const UserDashboard = () => {
                 {/* Logout Button */}
                 <button
                   onClick={handleLogout}
-                  className="flex items-center space-x-2 px-3 py-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 font-medium text-sm"
+                  className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-1.5 sm:py-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 font-medium text-xs sm:text-sm"
                   title="Sign out"
                 >
                   <svg
-                    className="w-4 h-4"
+                    className="w-3 h-3 sm:w-4 sm:h-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -431,34 +408,33 @@ const UserDashboard = () => {
           </div>
         </div>
       </header>{" "}
-      <div className="flex">
-        {/* Sidebar */}
+      <div className="flex">        {/* Sidebar */}
         <aside
-          className={`fixed top-16 left-0 bottom-0 z-40 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:translate-x-0 ${
+          className={`fixed top-14 sm:top-16 left-0 bottom-0 z-40 w-64 sm:w-72 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:translate-x-0 ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
           <div className="flex flex-col h-full">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900 mb-2">
+            <div className="p-4 sm:p-6 border-b border-gray-200">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
                 Filter by Topics
               </h2>
-              <p className="text-sm text-gray-500">
+              <p className="text-xs sm:text-sm text-gray-500">
                 Browse questions by category
               </p>
-            </div>{" "}
-            <div className="flex-1 overflow-y-auto p-4 space-y-2">
-              {" "}
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-2">
               <button
                 onClick={() => handleTopicFilter(null)}
-                className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 ${
+                className={`w-full text-left px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all duration-200 ${
                   selectedTopicFilter === null
                     ? "bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 text-blue-700"
                     : "hover:bg-gray-50 text-gray-700"
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-medium">All Topics</span>
+                  <span className="font-medium text-sm sm:text-base">All Topics</span>
                   <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
                     {questions.length}
                   </span>
@@ -468,15 +444,15 @@ const UserDashboard = () => {
                 <button
                   key={topic.id}
                   onClick={() => handleTopicFilter(topic.id)}
-                  className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 ${
+                  className={`w-full text-left px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all duration-200 ${
                     selectedTopicFilter === topic.id
                       ? "bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 text-blue-700"
                       : "hover:bg-gray-50 text-gray-700"
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-medium">{topic.topicName}</span>
-                    <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    <span className="font-medium text-sm sm:text-base truncate pr-2">{topic.topicName}</span>
+                    <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full flex-shrink-0">
                       {
                         questions.filter((q) => q.topics?.includes(topic.id))
                           .length
@@ -494,32 +470,30 @@ const UserDashboard = () => {
             className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
             onClick={() => setSidebarOpen(false)}
           ></div>
-        )}{" "}
-        {/* Main Content */}
+        )}{" "}        {/* Main Content */}
         <main className="flex-1">
-          <div className="max-w-4xl mx-auto p-6 space-y-8">
+          <div className="max-w-4xl mx-auto p-3 sm:p-4 lg:p-6 space-y-6 sm:space-y-8">
             {/* Welcome Section */}
-            <div className="text-center py-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <div className="text-center py-6 sm:py-8">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
                 Welcome to Q&A Hub
               </h1>
-              <p className="text-gray-600 max-w-2xl mx-auto">
+              <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto px-4">
                 Share your knowledge, ask questions, and learn from the
                 community. Connect with experts and get answers to your
                 questions.
               </p>
-            </div>{" "}
-            {/* Question Form Modal */}
+            </div>            {/* Question Form Modal */}
             {showQuestionForm && (
-              <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-                <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 sm:p-4">
+                <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
                   {/* Header */}
-                  <div className="bg-gradient-to-r from-blue-500 to-blue-600 py-6 px-6">
+                  <div className="bg-gradient-to-r from-blue-500 to-blue-600 py-4 sm:py-6 px-4 sm:px-6">
                     <div className="flex items-center justify-between">
                       <div className="text-center flex-1">
-                        <div className="inline-flex items-center justify-center w-12 h-12 bg-white/20 rounded-full mb-3">
+                        <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-full mb-2 sm:mb-3">
                           <svg
-                            className="h-6 w-6 text-white"
+                            className="h-5 w-5 sm:h-6 sm:w-6 text-white"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -532,20 +506,20 @@ const UserDashboard = () => {
                             />
                           </svg>
                         </div>
-                        <h2 className="text-2xl font-bold text-white mb-2">
+                        <h2 className="text-xl sm:text-2xl font-bold text-white mb-1 sm:mb-2">
                           Ask a Question
                         </h2>
-                        <p className="text-blue-100 text-sm">
+                        <p className="text-blue-100 text-xs sm:text-sm">
                           Share your question with the community
                         </p>
                       </div>
                       <button
                         onClick={() => setShowQuestionForm(false)}
-                        className="p-2 hover:bg-white/20 rounded-lg transition-colors ml-4"
+                        className="p-2 hover:bg-white/20 rounded-lg transition-colors ml-2 sm:ml-4"
                         aria-label="Close"
                       >
                         <svg
-                          className="w-5 h-5 text-white"
+                          className="w-4 h-4 sm:w-5 sm:h-5 text-white"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -561,7 +535,7 @@ const UserDashboard = () => {
                     </div>
                   </div>
 
-                  <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                  <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4">
                     <div>
                       {" "}
                       <label
@@ -632,17 +606,15 @@ const UserDashboard = () => {
                           </div>
                         )}
                       </div>
-                    </div>
-
-                    <div>
+                    </div>                    <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-3">
                         Topics
                       </label>
-                      <div className="grid grid-cols-2 gap-3 max-h-40 overflow-y-auto border border-gray-200 rounded-lg p-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 max-h-40 overflow-y-auto border border-gray-200 rounded-lg p-3 sm:p-4">
                         {topics.map((topic) => (
                           <label
                             key={topic.id}
-                            className="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
+                            className="flex items-center space-x-2 sm:space-x-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
                           >
                             <input
                               type="checkbox"
@@ -652,7 +624,7 @@ const UserDashboard = () => {
                               onChange={() => handleTopicSelection(topic.id)}
                               className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                             />
-                            <span className="text-sm font-medium text-gray-700">
+                            <span className="text-xs sm:text-sm font-medium text-gray-700 truncate">
                               {topic.topicName}
                             </span>
                           </label>
@@ -660,10 +632,10 @@ const UserDashboard = () => {
                       </div>
                       {selectedQuestionTopics.length > 0 && (
                         <div className="mt-3 p-3 bg-blue-50 rounded-lg">
-                          <p className="text-sm font-medium text-gray-700 mb-2">
+                          <p className="text-xs sm:text-sm font-medium text-gray-700 mb-2">
                             Selected topics:
                           </p>
-                          <div className="flex flex-wrap gap-2">
+                          <div className="flex flex-wrap gap-1 sm:gap-2">
                             {selectedQuestionTopics.map((topicId) => {
                               const topic = topics.find(
                                 (t) => t.id === topicId
@@ -671,7 +643,7 @@ const UserDashboard = () => {
                               return topic ? (
                                 <span
                                   key={topicId}
-                                  className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                                  className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
                                 >
                                   {topic.topicName}
                                 </span>
@@ -679,14 +651,14 @@ const UserDashboard = () => {
                             })}
                           </div>
                         </div>
-                      )}{" "}
+                      )}
                     </div>
 
-                    <div className="flex space-x-3 pt-4">
+                    <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 pt-4">
                       <button
                         type="button"
                         onClick={() => setShowQuestionForm(false)}
-                        className="flex-1 px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm"
+                        className="flex-1 px-4 sm:px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm"
                       >
                         Cancel
                       </button>
@@ -700,19 +672,17 @@ const UserDashboard = () => {
                   </form>
                 </div>
               </div>
-            )}
-            {/* Questions Section */}
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
+            )}            {/* Questions Section */}
+            <div className="space-y-4 sm:space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
                 <div>
-                  {" "}
-                  <h2 className="text-2xl font-bold text-gray-900">
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
                     {selectedTopicFilter
                       ? topics.find((t) => t.id === selectedTopicFilter)
                           ?.topicName || "Questions"
                       : "Latest Questions"}
                   </h2>
-                  <p className="text-gray-600 mt-1">
+                  <p className="text-sm sm:text-base text-gray-600 mt-1">
                     {filteredQuestions.length} question
                     {filteredQuestions.length !== 1 ? "s" : ""} found
                     {!selectedTopicFilter && " • Sorted by newest first"}
@@ -722,7 +692,7 @@ const UserDashboard = () => {
                 {selectedTopicFilter && (
                   <button
                     onClick={() => handleTopicFilter(null)}
-                    className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                    className="text-blue-600 hover:text-blue-700 text-sm font-medium self-start sm:self-auto"
                   >
                     View all questions →
                   </button>
@@ -730,10 +700,10 @@ const UserDashboard = () => {
               </div>
 
               {filteredQuestions.length === 0 ? (
-                <div className="text-center py-16">
-                  <div className="w-24 h-24 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="text-center py-12 sm:py-16">
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
                     <svg
-                      className="w-12 h-12 text-blue-500"
+                      className="w-10 h-10 sm:w-12 sm:h-12 text-blue-500"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -746,17 +716,17 @@ const UserDashboard = () => {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
                     No questions yet
                   </h3>
-                  <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                  <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 max-w-md mx-auto px-4">
                     {selectedTopicFilter
                       ? "No questions in this topic yet. Be the first to ask!"
                       : "Start the conversation by asking the first question."}
                   </p>
                   <button
                     onClick={() => setShowQuestionForm(true)}
-                    className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-lg transition-all duration-200 font-medium shadow-md hover:shadow-lg"
+                    className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg transition-all duration-200 font-medium shadow-md hover:shadow-lg text-sm sm:text-base"
                   >
                     <svg
                       className="w-4 h-4"
@@ -775,25 +745,23 @@ const UserDashboard = () => {
                   </button>
                 </div>
               ) : (
-                <div className="space-y-6">
-                  {filteredQuestions.map((question) => (
+                <div className="space-y-4 sm:space-y-6">                  {filteredQuestions.map((question) => (
                     <div
                       key={question.id}
                       className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200"
                     >
                       {/* Question Header */}
-                      <div className="p-6">
-                        {" "}
-                        <div className="flex items-start justify-between mb-4">
-                          <h3 className="text-lg font-semibold text-gray-900 flex-1 mr-4 leading-tight">
+                      <div className="p-4 sm:p-6">
+                        <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-3 sm:mb-4 gap-2 sm:gap-4">
+                          <h3 className="text-base sm:text-lg font-semibold text-gray-900 flex-1 leading-tight">
                             {question.title}
                           </h3>
-                          <span className="text-xs text-gray-500 whitespace-nowrap">
+                          <span className="text-xs text-gray-500 whitespace-nowrap self-start sm:self-auto">
                             {formatRelativeTime(question.createdAt)}
                           </span>
                         </div>
                         {question.topics && question.topics.length > 0 && (
-                          <div className="flex flex-wrap gap-2 mb-3">
+                          <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3">
                             {question.topics.map((topicId) => {
                               const topic = topics.find(
                                 (t) => t.id === topicId
@@ -801,15 +769,15 @@ const UserDashboard = () => {
                               return topic ? (
                                 <span
                                   key={topicId}
-                                  className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
+                                  className="inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
                                 >
                                   {topic.topicName}
                                 </span>
                               ) : null;
                             })}
                           </div>
-                        )}{" "}
-                        <p className="text-gray-600 leading-relaxed mb-4">
+                        )}
+                        <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-4">
                           {question.desc}
                         </p>
                         {/* Display attached image if exists */}
@@ -818,11 +786,11 @@ const UserDashboard = () => {
                             <img
                               src={question.image}
                               alt="Question attachment"
-                              className="max-w-full max-h-64 rounded-lg border border-gray-200 shadow-sm object-contain"
+                              className="max-w-full max-h-48 sm:max-h-64 rounded-lg border border-gray-200 shadow-sm object-contain"
                             />
                           </div>
-                        )}{" "}
-                        <div className="flex items-center justify-between text-sm text-gray-500">
+                        )}
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs sm:text-sm text-gray-500 gap-2 sm:gap-0">
                           <span>
                             {
                               answers.filter(
@@ -831,31 +799,26 @@ const UserDashboard = () => {
                             }{" "}
                             answers
                           </span>
-                          <div className="flex items-center space-x-4">
+                          <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-4">
                             <div className="flex items-center space-x-2">
-                              <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                              <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                                 <span className="text-xs text-white font-medium">
-                                  {question.user?.username
-                                    ?.charAt(0)
-                                    .toUpperCase() || "U"}
+                                  U
                                 </span>
                               </div>
                               <span>
-                                By {question.user?.username || "Unknown User"}
+                                By Unknown User
                               </span>
                             </div>
-                            <span>•</span>
+                            <span className="hidden sm:inline">•</span>
                             <span>
                               {formatRelativeTime(question.createdAt)}
                             </span>
                           </div>
                         </div>
-                      </div>
-
-                      {/* Answers Section */}
+                      </div>                      {/* Answers Section */}
                       <div className="border-t border-gray-100">
-                        <div className="p-6">
-                          {" "}
+                        <div className="p-4 sm:p-6">
                           {(() => {
                             const questionAnswers = answers.filter(
                               (answer) => answer.questionId === question.id
@@ -874,8 +837,8 @@ const UserDashboard = () => {
 
                             return (
                               <>
-                                <div className="flex items-center justify-between mb-4">
-                                  <h4 className="text-base font-semibold text-gray-900">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2 sm:gap-0">
+                                  <h4 className="text-sm sm:text-base font-semibold text-gray-900">
                                     Answers ({answerCount})
                                   </h4>
                                   {answerCount === 0 && (
@@ -883,7 +846,7 @@ const UserDashboard = () => {
                                       onClick={() =>
                                         toggleAnswerForm(question.id)
                                       }
-                                      className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg transition duration-300 font-medium text-sm shadow-md hover:shadow-lg"
+                                      className="px-3 sm:px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg transition duration-300 font-medium text-xs sm:text-sm shadow-md hover:shadow-lg self-start sm:self-auto"
                                     >
                                       Answer
                                     </button>
@@ -891,33 +854,30 @@ const UserDashboard = () => {
                                 </div>
 
                                 {answerCount === 0 ? (
-                                  <div className="text-center py-8 text-gray-500">
-                                    <p className="mb-3">No answers yet</p>
-                                    <p className="text-sm">
+                                  <div className="text-center py-6 sm:py-8 text-gray-500">
+                                    <p className="mb-2 sm:mb-3 text-sm sm:text-base">No answers yet</p>
+                                    <p className="text-xs sm:text-sm">
                                       Be the first to help!
                                     </p>
                                   </div>
                                 ) : (
                                   <>
-                                    <div className="space-y-4 mb-6">
+                                    <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
                                       {displayedAnswers.map((answer) => (
                                         <div
                                           key={answer.id}
-                                          className="bg-gray-50 rounded-lg p-4"
+                                          className="bg-gray-50 rounded-lg p-3 sm:p-4"
                                         >
-                                          <div className="flex items-start space-x-3 mb-3">
-                                            <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                          <div className="flex items-start space-x-2 sm:space-x-3 mb-2 sm:mb-3">
+                                            <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center flex-shrink-0">
                                               <span className="text-xs text-white font-medium">
-                                                {answer.user?.username
-                                                  ?.charAt(0)
-                                                  .toUpperCase() || "U"}
+                                                U
                                               </span>
                                             </div>
-                                            <div className="flex-1">
-                                              <div className="flex items-center space-x-2 mb-1">
-                                                <span className="font-medium text-gray-900 text-sm">
-                                                  {answer.user?.username ||
-                                                    "Unknown User"}
+                                            <div className="flex-1 min-w-0">
+                                              <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-2 mb-1">
+                                                <span className="font-medium text-gray-900 text-xs sm:text-sm">
+                                                  Unknown User
                                                 </span>
                                                 <span className="text-xs text-gray-500">
                                                   {formatRelativeTime(
@@ -925,24 +885,24 @@ const UserDashboard = () => {
                                                   )}
                                                 </span>
                                               </div>
-                                              <p className="text-gray-700 leading-relaxed">
+                                              <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
                                                 {answer.answer}
                                               </p>
                                             </div>
                                           </div>
-                                          <div className="flex items-center justify-between pl-11">
+                                          <div className="flex items-center justify-between pl-8 sm:pl-11">
                                             <button
                                               onClick={() =>
                                                 handleLikeAnswer(answer.id)
                                               }
-                                              className={`flex items-center space-x-2 transition-colors text-sm font-medium ${
+                                              className={`flex items-center space-x-1 sm:space-x-2 transition-colors text-xs sm:text-sm font-medium ${
                                                 answer.isLiked
                                                   ? "text-red-600 hover:text-red-700"
                                                   : "text-blue-600 hover:text-blue-700"
                                               }`}
                                             >
                                               <svg
-                                                className="w-4 h-4"
+                                                className="w-3 h-3 sm:w-4 sm:h-4"
                                                 fill={
                                                   answer.isLiked
                                                     ? "currentColor"
@@ -967,21 +927,19 @@ const UserDashboard = () => {
                                           </div>
                                         </div>
                                       ))}
-                                    </div>
-
-                                    {/* Show More/Less Answers Button */}
+                                    </div>                                    {/* Show More/Less Answers Button */}
                                     {answerCount > 2 && (
-                                      <div className="flex justify-center mb-4">
+                                      <div className="flex justify-center mb-3 sm:mb-4">
                                         <button
                                           onClick={() =>
                                             toggleShowMoreAnswers(question.id)
                                           }
-                                          className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors"
+                                          className="flex items-center space-x-1 sm:space-x-2 text-blue-600 hover:text-blue-700 font-medium text-xs sm:text-sm transition-colors"
                                         >
                                           {isExpanded ? (
                                             <>
                                               <svg
-                                                className="w-4 h-4"
+                                                className="w-3 h-3 sm:w-4 sm:h-4"
                                                 fill="none"
                                                 stroke="currentColor"
                                                 viewBox="0 0 24 24"
@@ -998,7 +956,7 @@ const UserDashboard = () => {
                                           ) : (
                                             <>
                                               <svg
-                                                className="w-4 h-4"
+                                                className="w-3 h-3 sm:w-4 sm:h-4"
                                                 fill="none"
                                                 stroke="currentColor"
                                                 viewBox="0 0 24 24"
@@ -1028,12 +986,12 @@ const UserDashboard = () => {
                                   <>
                                     {answerCount > 0 &&
                                       !showAnswerFormForQuestion && (
-                                        <div className="flex justify-center mb-4">
+                                        <div className="flex justify-center mb-3 sm:mb-4">
                                           <button
                                             onClick={() =>
                                               toggleAnswerForm(question.id)
                                             }
-                                            className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg transition duration-300 font-medium text-sm shadow-md hover:shadow-lg"
+                                            className="px-3 sm:px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg transition duration-300 font-medium text-xs sm:text-sm shadow-md hover:shadow-lg"
                                           >
                                             Add Answer
                                           </button>
@@ -1050,10 +1008,10 @@ const UserDashboard = () => {
                                             return newSet;
                                           });
                                         }}
-                                        className="bg-gray-50 rounded-lg p-4"
+                                        className="bg-gray-50 rounded-lg p-3 sm:p-4"
                                       >
                                         <div className="flex items-center justify-between mb-3">
-                                          <h5 className="font-medium text-gray-900">
+                                          <h5 className="font-medium text-gray-900 text-sm sm:text-base">
                                             Your Answer
                                           </h5>
                                           <button
@@ -1062,9 +1020,10 @@ const UserDashboard = () => {
                                               toggleAnswerForm(question.id)
                                             }
                                             className="text-gray-400 hover:text-gray-600 transition-colors"
+                                            aria-label="Close answer form"
                                           >
                                             <svg
-                                              className="w-5 h-5"
+                                              className="w-4 h-4 sm:w-5 sm:h-5"
                                               fill="none"
                                               stroke="currentColor"
                                               viewBox="0 0 24 24"
@@ -1093,7 +1052,7 @@ const UserDashboard = () => {
                                         <div className="flex justify-end mt-3">
                                           <button
                                             type="submit"
-                                            className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg transition duration-300 font-medium text-sm shadow-md hover:shadow-lg"
+                                            className="px-3 sm:px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg transition duration-300 font-medium text-xs sm:text-sm shadow-md hover:shadow-lg"
                                           >
                                             Submit Answer
                                           </button>
@@ -1111,10 +1070,30 @@ const UserDashboard = () => {
                   ))}
                 </div>
               )}
-            </div>
-          </div>
+            </div>          </div>
         </main>
       </div>
+
+      {/* Floating Action Button for Mobile */}
+      <button
+        onClick={() => setShowQuestionForm(true)}
+        className="fixed bottom-6 right-6 lg:hidden w-14 h-14 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 z-30 flex items-center justify-center"
+        aria-label="Ask a question"
+      >
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 4v16m8-8H4"
+          />
+        </svg>
+      </button>
     </div>
   );
 };
