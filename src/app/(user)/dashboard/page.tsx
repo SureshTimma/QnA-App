@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-
-
 //interfaces
 interface Question {
   id: string;
@@ -32,8 +30,6 @@ interface Topic {
   topicName: string;
 }
 
-
-
 // function to format relative time
 const formatRelativeTime = (dateString: string | null | undefined): string => {
   if (!dateString) return "Recently";
@@ -56,8 +52,6 @@ const formatRelativeTime = (dateString: string | null | undefined): string => {
     return "Recently";
   }
 };
-
-
 
 //pages main code starts here
 const UserDashboard = () => {
@@ -266,8 +260,6 @@ const UserDashboard = () => {
     }
   }, [questions, selectedTopicFilter]);
 
-
-
   //fetching data
   const fetchQuestions = async () => {
     try {
@@ -301,12 +293,15 @@ const UserDashboard = () => {
     fetchAnswers();
     fetchTopics();
   }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
       {/* Header Bar */}
       <header className="bg-white/80 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
-          <div className="flex items-center justify-between h-14 sm:h-16">            <div className="flex items-center space-x-2 sm:space-x-4">
+          <div className="flex items-center justify-between h-14 sm:h-16">
+            {" "}
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
                 className="lg:hidden p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 transition-colors"
@@ -342,9 +337,12 @@ const UserDashboard = () => {
                     />
                   </svg>
                 </div>
-                <h1 className="text-lg sm:text-xl font-bold text-gray-900">Q&A Hub</h1>
+                <h1 className="text-lg sm:text-xl font-bold text-gray-900">
+                  Q&A Hub
+                </h1>
               </div>
-            </div>{" "}            <div className="flex items-center space-x-2 sm:space-x-4">
+            </div>{" "}
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <button
                 onClick={() => setShowQuestionForm(!showQuestionForm)}
                 className="hidden sm:flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg font-medium text-sm"
@@ -361,7 +359,8 @@ const UserDashboard = () => {
                     strokeWidth={2}
                     d="M12 4v16m8-8H4"
                   />
-                </svg>                <span className="hidden md:inline">Ask Question</span>
+                </svg>{" "}
+                <span className="hidden md:inline">Ask Question</span>
                 <span className="md:hidden">Ask</span>
               </button>
 
@@ -375,7 +374,8 @@ const UserDashboard = () => {
                         session?.user?.email?.charAt(0)?.toUpperCase() ||
                         "U"}
                     </span>
-                  </div>                  <div className="hidden sm:block">
+                  </div>{" "}
+                  <div className="hidden sm:block">
                     <p className="text-xs sm:text-sm font-medium text-gray-900 truncate max-w-24 sm:max-w-none">
                       {session?.user?.name || session?.user?.email || "User"}
                     </p>
@@ -408,7 +408,9 @@ const UserDashboard = () => {
           </div>
         </div>
       </header>{" "}
-      <div className="flex">        {/* Sidebar */}
+      <div className="flex">
+        {" "}
+        {/* Sidebar */}
         <aside
           className={`fixed top-14 sm:top-16 left-0 bottom-0 z-40 w-64 sm:w-72 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:translate-x-0 ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
@@ -434,7 +436,9 @@ const UserDashboard = () => {
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-medium text-sm sm:text-base">All Topics</span>
+                  <span className="font-medium text-sm sm:text-base">
+                    All Topics
+                  </span>
                   <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
                     {questions.length}
                   </span>
@@ -451,7 +455,9 @@ const UserDashboard = () => {
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-medium text-sm sm:text-base truncate pr-2">{topic.topicName}</span>
+                    <span className="font-medium text-sm sm:text-base truncate pr-2">
+                      {topic.topicName}
+                    </span>
                     <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full flex-shrink-0">
                       {
                         questions.filter((q) => q.topics?.includes(topic.id))
@@ -470,7 +476,8 @@ const UserDashboard = () => {
             className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
             onClick={() => setSidebarOpen(false)}
           ></div>
-        )}{" "}        {/* Main Content */}
+        )}{" "}
+        {/* Main Content */}
         <main className="flex-1">
           <div className="max-w-4xl mx-auto p-3 sm:p-4 lg:p-6 space-y-6 sm:space-y-8">
             {/* Welcome Section */}
@@ -483,7 +490,8 @@ const UserDashboard = () => {
                 community. Connect with experts and get answers to your
                 questions.
               </p>
-            </div>            {/* Question Form Modal */}
+            </div>{" "}
+            {/* Question Form Modal */}
             {showQuestionForm && (
               <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 sm:p-4">
                 <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
@@ -535,7 +543,10 @@ const UserDashboard = () => {
                     </div>
                   </div>
 
-                  <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4">
+                  <form
+                    onSubmit={handleSubmit}
+                    className="p-4 sm:p-6 space-y-4"
+                  >
                     <div>
                       {" "}
                       <label
@@ -555,7 +566,6 @@ const UserDashboard = () => {
                         placeholder="What's your question?"
                       />
                     </div>
-
                     <div>
                       <label
                         htmlFor="desc"
@@ -574,7 +584,6 @@ const UserDashboard = () => {
                         placeholder="Provide more details about your question..."
                       ></textarea>
                     </div>
-
                     {/* Image Upload Section */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -606,7 +615,8 @@ const UserDashboard = () => {
                           </div>
                         )}
                       </div>
-                    </div>                    <div>
+                    </div>{" "}
+                    <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-3">
                         Topics
                       </label>
@@ -653,7 +663,6 @@ const UserDashboard = () => {
                         </div>
                       )}
                     </div>
-
                     <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 pt-4">
                       <button
                         type="button"
@@ -672,7 +681,8 @@ const UserDashboard = () => {
                   </form>
                 </div>
               </div>
-            )}            {/* Questions Section */}
+            )}{" "}
+            {/* Questions Section */}
             <div className="space-y-4 sm:space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
                 <div>
@@ -745,7 +755,9 @@ const UserDashboard = () => {
                   </button>
                 </div>
               ) : (
-                <div className="space-y-4 sm:space-y-6">                  {filteredQuestions.map((question) => (
+                <div className="space-y-4 sm:space-y-6">
+                  {" "}
+                  {filteredQuestions.map((question) => (
                     <div
                       key={question.id}
                       className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200"
@@ -806,9 +818,7 @@ const UserDashboard = () => {
                                   U
                                 </span>
                               </div>
-                              <span>
-                                By Unknown User
-                              </span>
+                              <span>By Unknown User</span>
                             </div>
                             <span className="hidden sm:inline">•</span>
                             <span>
@@ -816,7 +826,8 @@ const UserDashboard = () => {
                             </span>
                           </div>
                         </div>
-                      </div>                      {/* Answers Section */}
+                      </div>{" "}
+                      {/* Answers Section */}
                       <div className="border-t border-gray-100">
                         <div className="p-4 sm:p-6">
                           {(() => {
@@ -855,7 +866,9 @@ const UserDashboard = () => {
 
                                 {answerCount === 0 ? (
                                   <div className="text-center py-6 sm:py-8 text-gray-500">
-                                    <p className="mb-2 sm:mb-3 text-sm sm:text-base">No answers yet</p>
+                                    <p className="mb-2 sm:mb-3 text-sm sm:text-base">
+                                      No answers yet
+                                    </p>
                                     <p className="text-xs sm:text-sm">
                                       Be the first to help!
                                     </p>
@@ -927,7 +940,8 @@ const UserDashboard = () => {
                                           </div>
                                         </div>
                                       ))}
-                                    </div>                                    {/* Show More/Less Answers Button */}
+                                    </div>{" "}
+                                    {/* Show More/Less Answers Button */}
                                     {answerCount > 2 && (
                                       <div className="flex justify-center mb-3 sm:mb-4">
                                         <button
@@ -1070,10 +1084,10 @@ const UserDashboard = () => {
                   ))}
                 </div>
               )}
-            </div>          </div>
+            </div>{" "}
+          </div>
         </main>
       </div>
-
       {/* Floating Action Button for Mobile */}
       <button
         onClick={() => setShowQuestionForm(true)}
