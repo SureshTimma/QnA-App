@@ -13,6 +13,9 @@ interface Question {
   image?: string;
   userId: string;
   createdAt?: string;
+  user: {
+    username: string;
+  };
 }
 
 interface Answer {
@@ -23,6 +26,9 @@ interface Answer {
   userId: string;
   createdAt?: string;
   isLiked?: boolean;
+  user: {
+    username: string;
+  };
 }
 
 interface Topic {
@@ -890,7 +896,8 @@ const UserDashboard = () => {
                                             <div className="flex-1 min-w-0">
                                               <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-2 mb-1">
                                                 <span className="font-medium text-gray-900 text-xs sm:text-sm">
-                                                  Unknown User
+                                                  {answer.user?.username ||
+                                                    "Unknown User"}
                                                 </span>
                                                 <span className="text-xs text-gray-500">
                                                   {formatRelativeTime(

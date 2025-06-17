@@ -13,6 +13,8 @@ const SignIn = () => {
     password: "",
     redirect: false,
   });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -20,16 +22,25 @@ const SignIn = () => {
       [e.target.name]: e.target.value,
     });
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await signIn("credentials", formData);
-    console.log("SignIn response:", response);
-    if (response?.status == 200) {
-      router.push("/dashboard");
-    } else {
-      console.error("SignIn failed:", response);
-      alert("Invalid email or password");
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await signIn("credentials", formData);
+      console.log("SignIn response:", response);
+      if (response?.status == 200) {
+        router.push("/dashboard");
+      } else {
+        console.error("SignIn failed:", response);
+        setError("Invalid email or password");
+      }
+    } catch (error: unknown) {
+      console.error("SignIn error:", error);
+      setError("An unexpected error occurred during sign in");
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -57,10 +68,28 @@ const SignIn = () => {
             <h2 className="text-2xl font-bold text-white mb-2">Welcome Back</h2>
             <p className="text-blue-100 text-base">Sign in to your account</p>
           </div>
-        </div>
+        </div>{" "}
         <div className="p-6">
           {" "}
           <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700">
+                <div className="flex items-center">
+                  <svg
+                    className="w-4 h-4 mr-2"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <p className="text-sm font-medium">{error}</p>
+                </div>
+              </div>
+            )}
             <div>
               <label
                 htmlFor="email"
@@ -83,20 +112,20 @@ const SignIn = () => {
                       d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
                     />
                   </svg>
-                </div>
+                </div>{" "}
                 <input
                   type="email"
                   id="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 focus:bg-white text-sm"
+                  disabled={isLoading}
+                  className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 focus:bg-white disabled:opacity-50 text-sm"
                   placeholder="Enter your email"
                   required
                 />
               </div>
             </div>
-
             <div>
               <label
                 htmlFor="password"
@@ -119,25 +148,56 @@ const SignIn = () => {
                       d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                     />
                   </svg>
-                </div>
+                </div>{" "}
                 <input
                   type="password"
                   id="password"
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 focus:bg-white text-sm"
+                  disabled={isLoading}
+                  className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 focus:bg-white disabled:opacity-50 text-sm"
                   placeholder="Enter your password"
                   required
                 />
               </div>
-            </div>
-
+            </div>{" "}
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-2.5 rounded-lg transition duration-300 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-md hover:shadow-lg transform hover:scale-[1.01] active:scale-[0.99] text-sm"
+              disabled={isLoading}
+              className={`w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium py-2.5 rounded-lg transition duration-300 shadow-md hover:shadow-lg transform hover:scale-[1.01] active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm ${
+                isLoading
+                  ? "opacity-70 cursor-not-allowed"
+                  : "hover:from-blue-600 hover:to-blue-700"
+              }`}
             >
-              Sign In
+              {isLoading ? (
+                <div className="flex items-center justify-center">
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-4 w-4 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Signing In...
+                </div>
+              ) : (
+                "Sign In"
+              )}
             </button>
           </form>
           <p className="mt-4 text-center text-sm text-gray-600">
