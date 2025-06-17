@@ -63,7 +63,7 @@ const formatRelativeTime = (dateString: string | null | undefined): string => {
 const UserDashboard = () => {
   const { data: session } = useSession();
   const router = useRouter();
-  
+
   const [qnData, setQnData] = useState({
     title: "",
     desc: "",
@@ -71,32 +71,35 @@ const UserDashboard = () => {
     image: "" as string,
   });
 
-
   // State variables
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [filteredQuestions, setFilteredQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [topics, setTopics] = useState<Topic[]>([]);
-  const [selectedTopicFilter, setSelectedTopicFilter] = useState<string | null>(null);
-  const [selectedQuestionTopics, setSelectedQuestionTopics] = useState<string[]>([]);  
+  const [selectedTopicFilter, setSelectedTopicFilter] = useState<string | null>(
+    null
+  );
+  const [selectedQuestionTopics, setSelectedQuestionTopics] = useState<
+    string[]
+  >([]);
+  const [filteredQuestions, setFilteredQuestions] = useState<Question[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showQuestionForm, setShowQuestionForm] = useState(false);
-  const [imagePreview, setImagePreview] = useState<string>("");
-  const [expandedQuestions, setExpandedQuestions] = useState<Set<string>>(new Set());
   const [showAnswerForm, setShowAnswerForm] = useState<Set<string>>(new Set());
+  const [expandedQuestions, setExpandedQuestions] = useState<Set<string>>(
+    new Set()
+  );
+  const [imagePreview, setImagePreview] = useState<string>("");
 
-  
   const handleLogout = async () => {
-    await signOut({ 
+    await signOut({
       callbackUrl: "/signin",
-      redirect: true 
+      redirect: true,
     });
   };
 
-  
   //toggles
   const toggleShowMoreAnswers = (questionId: string) => {
-    setExpandedQuestions(prev => {
+    setExpandedQuestions((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(questionId)) {
         newSet.delete(questionId);
@@ -108,7 +111,7 @@ const UserDashboard = () => {
   };
 
   const toggleAnswerForm = (questionId: string) => {
-    setShowAnswerForm(prev => {
+    setShowAnswerForm((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(questionId)) {
         newSet.delete(questionId);
@@ -118,9 +121,7 @@ const UserDashboard = () => {
       return newSet;
     });
   };
-    
-  
-  
+
   //handlers
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -179,8 +180,6 @@ const UserDashboard = () => {
     setImagePreview("");
   };
 
-
-
   const [answerData, setAnswerData] = useState({
     questionId: "",
     answer: "",
@@ -189,7 +188,7 @@ const UserDashboard = () => {
   const [answerValues, setAnswerValues] = useState<{ [key: string]: string }>(
     {}
   );
-  
+
   const handleAnswerChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>,
     questionId: string
@@ -216,23 +215,23 @@ const UserDashboard = () => {
         answer: answerValues[questionId] || "",
       });
       console.log(answerResponse.data);
-      // Clear the specific answer form
+
       setAnswerValues({
         ...answerValues,
         [questionId]: "",
       });
       setAnswerData({ questionId: "", answer: "" });
-      // Refresh answers list
+
       fetchAnswers();
     } catch (error) {
       console.error("Error submitting answer:", error);
     }
   };
+
   const handleLikeAnswer = async (answerId: string) => {
     try {
       const response = await axios.put("/api/likes", { answerId });
-      console.log(response.data);
-      // Refresh answers to show updated likes
+
       fetchAnswers();
     } catch (error) {
       console.error("Error liking answer:", error);
@@ -253,6 +252,23 @@ const UserDashboard = () => {
     setSelectedTopicFilter(topicId);
   };
 
+  // Filter questions based on selected topic
+  useEffect(() => {
+    if (selectedTopicFilter) {
+      setFilteredQuestions(
+        questions.filter(
+          (question) =>
+            question.topics && question.topics.includes(selectedTopicFilter)
+        )
+      );
+    } else {
+      setFilteredQuestions(questions);
+    }
+  }, [questions, selectedTopicFilter]);
+
+  
+
+  //fetching data
   const fetchQuestions = async () => {
     try {
       const qnsData = await axios.get("/api/questions");
@@ -279,31 +295,15 @@ const UserDashboard = () => {
       console.error("Error fetching topics:", error);
     }
   };
+
   useEffect(() => {
     fetchQuestions();
     fetchAnswers();
     fetchTopics();
   }, []);
 
-  // Filter questions based on selected topic
-  useEffect(() => {
-    if (selectedTopicFilter) {
-      setFilteredQuestions(
-        questions.filter(
-          (question) =>
-            question.topics && question.topics.includes(selectedTopicFilter)
-        )
-      );
-    } else {
-      setFilteredQuestions(questions);
-    }
-  }, [questions, selectedTopicFilter]);
-
-
-
-
-
-  return (    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
       {/* Header Bar */}
       <header className="bg-white/80 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -346,7 +346,8 @@ const UserDashboard = () => {
                 </div>
                 <h1 className="text-xl font-bold text-gray-900">Q&A Hub</h1>
               </div>
-            </div>            <div className="flex items-center space-x-4">
+            </div>{" "}
+            <div className="flex items-center space-x-4">
               <button
                 onClick={() => setShowQuestionForm(!showQuestionForm)}
                 className="hidden sm:flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg font-medium"
@@ -392,7 +393,9 @@ const UserDashboard = () => {
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                     <span className="text-sm text-white font-medium">
-                      {session?.user?.name?.charAt(0)?.toUpperCase() || session?.user?.email?.charAt(0)?.toUpperCase() || "U"}
+                      {session?.user?.name?.charAt(0)?.toUpperCase() ||
+                        session?.user?.email?.charAt(0)?.toUpperCase() ||
+                        "U"}
                     </span>
                   </div>
                   <div className="hidden md:block">
@@ -427,7 +430,8 @@ const UserDashboard = () => {
             </div>
           </div>
         </div>
-      </header>      <div className="flex">
+      </header>{" "}
+      <div className="flex">
         {/* Sidebar */}
         <aside
           className={`fixed top-16 left-0 bottom-0 z-40 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:translate-x-0 ${
@@ -442,7 +446,10 @@ const UserDashboard = () => {
               <p className="text-sm text-gray-500">
                 Browse questions by category
               </p>
-            </div>            <div className="flex-1 overflow-y-auto p-4 space-y-2">              <button
+            </div>{" "}
+            <div className="flex-1 overflow-y-auto p-4 space-y-2">
+              {" "}
+              <button
                 onClick={() => handleTopicFilter(null)}
                 className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 ${
                   selectedTopicFilter === null
@@ -457,7 +464,6 @@ const UserDashboard = () => {
                   </span>
                 </div>
               </button>
-
               {topics.map((topic) => (
                 <button
                   key={topic.id}
@@ -472,9 +478,8 @@ const UserDashboard = () => {
                     <span className="font-medium">{topic.topicName}</span>
                     <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
                       {
-                        questions.filter((q) =>
-                          q.topics?.includes(topic.id)
-                        ).length
+                        questions.filter((q) => q.topics?.includes(topic.id))
+                          .length
                       }
                     </span>
                   </div>
@@ -483,14 +488,14 @@ const UserDashboard = () => {
             </div>
           </div>
         </aside>
-
         {/* Overlay */}
         {sidebarOpen && (
           <div
             className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
             onClick={() => setSidebarOpen(false)}
           ></div>
-        )}        {/* Main Content */}
+        )}{" "}
+        {/* Main Content */}
         <main className="flex-1">
           <div className="max-w-4xl mx-auto p-6 space-y-8">
             {/* Welcome Section */}
@@ -503,7 +508,8 @@ const UserDashboard = () => {
                 community. Connect with experts and get answers to your
                 questions.
               </p>
-            </div>            {/* Question Form Modal */}
+            </div>{" "}
+            {/* Question Form Modal */}
             {showQuestionForm && (
               <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
                 <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -529,7 +535,9 @@ const UserDashboard = () => {
                         <h2 className="text-2xl font-bold text-white mb-2">
                           Ask a Question
                         </h2>
-                        <p className="text-blue-100 text-sm">Share your question with the community</p>
+                        <p className="text-blue-100 text-sm">
+                          Share your question with the community
+                        </p>
                       </div>
                       <button
                         onClick={() => setShowQuestionForm(false)}
@@ -554,7 +562,9 @@ const UserDashboard = () => {
                   </div>
 
                   <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                    <div>                      <label
+                    <div>
+                      {" "}
+                      <label
                         htmlFor="title"
                         className="block text-sm font-medium text-gray-700 mb-1"
                       >
@@ -648,7 +658,6 @@ const UserDashboard = () => {
                           </label>
                         ))}
                       </div>
-
                       {selectedQuestionTopics.length > 0 && (
                         <div className="mt-3 p-3 bg-blue-50 rounded-lg">
                           <p className="text-sm font-medium text-gray-700 mb-2">
@@ -670,7 +679,8 @@ const UserDashboard = () => {
                             })}
                           </div>
                         </div>
-                      )}                    </div>
+                      )}{" "}
+                    </div>
 
                     <div className="flex space-x-3 pt-4">
                       <button
@@ -691,7 +701,6 @@ const UserDashboard = () => {
                 </div>
               </div>
             )}
-
             {/* Questions Section */}
             <div className="space-y-6">
               <div className="flex items-center justify-between">
@@ -746,7 +755,8 @@ const UserDashboard = () => {
                       : "Start the conversation by asking the first question."}
                   </p>
                   <button
-                    onClick={() => setShowQuestionForm(true)}                    className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-lg transition-all duration-200 font-medium shadow-md hover:shadow-lg"
+                    onClick={() => setShowQuestionForm(true)}
+                    className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-lg transition-all duration-200 font-medium shadow-md hover:shadow-lg"
                   >
                     <svg
                       className="w-4 h-4"
@@ -844,17 +854,22 @@ const UserDashboard = () => {
 
                       {/* Answers Section */}
                       <div className="border-t border-gray-100">
-                        <div className="p-6">                          {(() => {
+                        <div className="p-6">
+                          {" "}
+                          {(() => {
                             const questionAnswers = answers.filter(
                               (answer) => answer.questionId === question.id
                             );
                             const answerCount = questionAnswers.length;
-                            const isExpanded = expandedQuestions.has(question.id);
-                            const showAnswerFormForQuestion = showAnswerForm.has(question.id);
-                            
+                            const isExpanded = expandedQuestions.has(
+                              question.id
+                            );
+                            const showAnswerFormForQuestion =
+                              showAnswerForm.has(question.id);
+
                             // Show first 2 answers by default, all when expanded
-                            const displayedAnswers = isExpanded 
-                              ? questionAnswers 
+                            const displayedAnswers = isExpanded
+                              ? questionAnswers
                               : questionAnswers.slice(0, 2);
 
                             return (
@@ -865,7 +880,9 @@ const UserDashboard = () => {
                                   </h4>
                                   {answerCount === 0 && (
                                     <button
-                                      onClick={() => toggleAnswerForm(question.id)}
+                                      onClick={() =>
+                                        toggleAnswerForm(question.id)
+                                      }
                                       className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg transition duration-300 font-medium text-sm shadow-md hover:shadow-lg"
                                     >
                                       Answer
@@ -876,7 +893,9 @@ const UserDashboard = () => {
                                 {answerCount === 0 ? (
                                   <div className="text-center py-8 text-gray-500">
                                     <p className="mb-3">No answers yet</p>
-                                    <p className="text-sm">Be the first to help!</p>
+                                    <p className="text-sm">
+                                      Be the first to help!
+                                    </p>
                                   </div>
                                 ) : (
                                   <>
@@ -939,8 +958,10 @@ const UserDashboard = () => {
                                                 />
                                               </svg>
                                               <span>
-                                                {answer.isLiked ? "Unlike" : "Like"} (
-                                                {Number(answer.likes) || 0})
+                                                {answer.isLiked
+                                                  ? "Unlike"
+                                                  : "Like"}{" "}
+                                                ({Number(answer.likes) || 0})
                                               </span>
                                             </button>
                                           </div>
@@ -952,22 +973,47 @@ const UserDashboard = () => {
                                     {answerCount > 2 && (
                                       <div className="flex justify-center mb-4">
                                         <button
-                                          onClick={() => toggleShowMoreAnswers(question.id)}
+                                          onClick={() =>
+                                            toggleShowMoreAnswers(question.id)
+                                          }
                                           className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors"
                                         >
                                           {isExpanded ? (
                                             <>
-                                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                                              <svg
+                                                className="w-4 h-4"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                              >
+                                                <path
+                                                  strokeLinecap="round"
+                                                  strokeLinejoin="round"
+                                                  strokeWidth={2}
+                                                  d="M5 15l7-7 7 7"
+                                                />
                                               </svg>
                                               <span>Show Less Answers</span>
                                             </>
                                           ) : (
                                             <>
-                                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                              <svg
+                                                className="w-4 h-4"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                              >
+                                                <path
+                                                  strokeLinecap="round"
+                                                  strokeLinejoin="round"
+                                                  strokeWidth={2}
+                                                  d="M19 9l-7 7-7-7"
+                                                />
                                               </svg>
-                                              <span>Show More Answers ({answerCount - 2} more)</span>
+                                              <span>
+                                                Show More Answers (
+                                                {answerCount - 2} more)
+                                              </span>
                                             </>
                                           )}
                                         </button>
@@ -977,24 +1023,28 @@ const UserDashboard = () => {
                                 )}
 
                                 {/* Answer Form - Show for questions with answers or when explicitly requested */}
-                                {(answerCount > 0 || showAnswerFormForQuestion) && (
+                                {(answerCount > 0 ||
+                                  showAnswerFormForQuestion) && (
                                   <>
-                                    {answerCount > 0 && !showAnswerFormForQuestion && (
-                                      <div className="flex justify-center mb-4">
-                                        <button
-                                          onClick={() => toggleAnswerForm(question.id)}
-                                          className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg transition duration-300 font-medium text-sm shadow-md hover:shadow-lg"
-                                        >
-                                          Add Answer
-                                        </button>
-                                      </div>
-                                    )}
-                                    
+                                    {answerCount > 0 &&
+                                      !showAnswerFormForQuestion && (
+                                        <div className="flex justify-center mb-4">
+                                          <button
+                                            onClick={() =>
+                                              toggleAnswerForm(question.id)
+                                            }
+                                            className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg transition duration-300 font-medium text-sm shadow-md hover:shadow-lg"
+                                          >
+                                            Add Answer
+                                          </button>
+                                        </div>
+                                      )}
+
                                     {showAnswerFormForQuestion && (
                                       <form
                                         onSubmit={(e) => {
                                           answerQuestion(e, question.id);
-                                          setShowAnswerForm(prev => {
+                                          setShowAnswerForm((prev) => {
                                             const newSet = new Set(prev);
                                             newSet.delete(question.id);
                                             return newSet;
@@ -1003,14 +1053,28 @@ const UserDashboard = () => {
                                         className="bg-gray-50 rounded-lg p-4"
                                       >
                                         <div className="flex items-center justify-between mb-3">
-                                          <h5 className="font-medium text-gray-900">Your Answer</h5>
+                                          <h5 className="font-medium text-gray-900">
+                                            Your Answer
+                                          </h5>
                                           <button
                                             type="button"
-                                            onClick={() => toggleAnswerForm(question.id)}
+                                            onClick={() =>
+                                              toggleAnswerForm(question.id)
+                                            }
                                             className="text-gray-400 hover:text-gray-600 transition-colors"
                                           >
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                            <svg
+                                              className="w-5 h-5"
+                                              fill="none"
+                                              stroke="currentColor"
+                                              viewBox="0 0 24 24"
+                                            >
+                                              <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M6 18L18 6M6 6l12 12"
+                                              />
                                             </svg>
                                           </button>
                                         </div>
@@ -1020,7 +1084,9 @@ const UserDashboard = () => {
                                             handleAnswerChange(e, question.id)
                                           }
                                           name="answer"
-                                          value={answerValues[question.id] || ""}
+                                          value={
+                                            answerValues[question.id] || ""
+                                          }
                                           className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 focus:bg-white text-sm resize-none"
                                           rows={3}
                                         ></textarea>
