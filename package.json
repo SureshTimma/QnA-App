@@ -1,10 +1,10 @@
 {
   "name": "qna-app",
   "version": "0.1.0",
-  "private": true,  "scripts": {
+  "private": true,
+  "scripts": {
     "dev": "next dev",
-    "dev:turbo": "next dev --turbopack",
-    "build": "next dev --turbopack",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "db:seed": "ts-node prisma/seed.ts",
