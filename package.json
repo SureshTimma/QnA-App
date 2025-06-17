@@ -11,7 +11,8 @@
     "db:seed:realistic": "ts-node prisma/realistic-seed.ts",
     "db:seed:reset": "npx prisma db push && npm run db:seed",
     "db:seed:all": "npm run db:seed && npm run db:seed:realistic",
-    "db:util": "ts-node prisma/utils.ts"
+    "db:util": "ts-node prisma/utils.ts",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^6.9.0",
