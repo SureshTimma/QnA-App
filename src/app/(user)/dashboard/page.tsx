@@ -89,6 +89,8 @@ const UserDashboard = () => {
     new Set()
   );
   const [imagePreview, setImagePreview] = useState<string>("");
+  const [likingAnswerId, setLikingAnswerId] = useState<string | null>(null);
+
 
   const handleLogout = async () => {
     await signOut({
@@ -229,12 +231,15 @@ const UserDashboard = () => {
   };
 
   const handleLikeAnswer = async (answerId: string) => {
+    setLikingAnswerId(answerId);
     try {
       const response = await axios.put("/api/likes", { answerId });
 
       fetchAnswers();
     } catch (error) {
       console.error("Error liking answer:", error);
+    } finally {
+      setLikingAnswerId(null);
     }
   };
 
@@ -824,7 +829,7 @@ const UserDashboard = () => {
                                   U
                                 </span>
                               </div>
-                              <span>By Unknown User</span>
+                              <span>By {question.user?.username || "Unknown User"}</span>
                             </div>
                             <span className="hidden sm:inline">•</span>
                             <span>
@@ -920,28 +925,29 @@ const UserDashboard = () => {
                                                   ? "text-red-600 hover:text-red-700"
                                                   : "text-blue-600 hover:text-blue-700"
                                               }`}
+                                              disabled={likingAnswerId === answer.id}
                                             >
-                                              <svg
-                                                className="w-3 h-3 sm:w-4 sm:h-4"
-                                                fill={
-                                                  answer.isLiked
-                                                    ? "currentColor"
-                                                    : "none"
-                                                }
-                                                stroke="currentColor"
-                                                viewBox="0 0 20 20"
-                                              >
-                                                <path
-                                                  fillRule="evenodd"
-                                                  d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                                                  clipRule="evenodd"
-                                                />
-                                              </svg>
+                                              {likingAnswerId === answer.id ? (
+                                                <svg className="animate-spin w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24">
+                                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                                                </svg>
+                                              ) : (
+                                                <svg
+                                                  className="w-3 h-3 sm:w-4 sm:h-4"
+                                                  fill={answer.isLiked ? "currentColor" : "none"}
+                                                  stroke="currentColor"
+                                                  viewBox="0 0 20 20"
+                                                >
+                                                  <path
+                                                    fillRule="evenodd"
+                                                    d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                                                    clipRule="evenodd"
+                                                  />
+                                                </svg>
+                                              )}
                                               <span>
-                                                {answer.isLiked
-                                                  ? "Unlike"
-                                                  : "Like"}{" "}
-                                                ({Number(answer.likes) || 0})
+                                                {answer.isLiked ? "Unlike" : "Like"} ({Number(answer.likes) || 0})
                                               </span>
                                             </button>
                                           </div>
